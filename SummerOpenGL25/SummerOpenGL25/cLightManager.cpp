@@ -4,6 +4,8 @@ cLight::cLight()
 {
     this->position = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
     this->diffuse = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    // RGB is the specular higlight COLOUR (almost always white)
+    // W is the "power" starting at 1.0
     this->specular = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
     this->atten = glm::vec4(0.0f, 0.01f, 0.01f, 1.0f);
     // For spot lights

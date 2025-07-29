@@ -8,6 +8,10 @@ in vec4 vertWorldPosition;
 
 out vec4 pixelColour;
 
+// Pass the per object specular 'shininess'
+uniform vec4 vertSpecular;// = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
+
 vec4 calculateLightContrib( vec3 vertexMaterialColour, vec3 vertexNormal, 
                             vec3 vertexWorldPos, vec4 vertexSpecular);
 							
@@ -15,7 +19,7 @@ struct sLight
 {
 	vec4 position;	// xyz, ignoring w (4th parameter)	
 	vec4 diffuse;	
-	vec4 specular;	// rgb = highlight colour, w = power
+	vec4 specular;	// rgb = highlight colour, w = power (starts at 1, goes to 10,000+)
 	vec4 atten;		// x = constant, y = linear, z = quadratic, w = DistanceCutOff
 	vec4 direction;	// Spot, directional lights, ignoring w (4th parameter)	
 	vec4 param1;	// x = lightType, y = inner angle, z = outer angle, w = TBD
@@ -36,13 +40,15 @@ void main()
 {
     //gl_FragColor = vec4(vertColor, 1.0);
 	
-	vec4 vertSpecular = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+//	vec4 vertSpecular = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	
 	pixelColour = vec4(vertColor);
 	
 	vec4 lightContrib = calculateLightContrib(vertColor.rgb, vertNormal.xyz, vertWorldPosition.xyz, vertSpecular);
 	
 	pixelColour.rgb = lightContrib.rgb;
+	
+	pixelColour.a = 1.0f;
 };
 
 // Feeney gave you this (it's inspired by the basic shader in Mike Bailey's Graphic Shaders book)
@@ -122,8 +128,9 @@ vec4 calculateLightContrib( vec3 vertexMaterialColour, vec3 vertexNormal,
 		// To simplify, we are NOT using the light specular value, just the object’s.
 		float objectSpecularPower = vertexSpecular.w; 
 		
-		lightSpecularContrib = pow( max(0.0f, dot( eyeVector, reflectVector) ), objectSpecularPower )
-			                   * vertexSpecular.rgb;	//* theLights[lightIndex].Specular.rgb
+		lightSpecularContrib = 
+		             pow( max(0.0f, dot( eyeVector, reflectVector) ), 
+					      objectSpecularPower ) * vertexSpecular.rgb;	//* theLights[lightIndex].Specular.rgb
 					   
 		// Attenuation
 		float attenuation = 1.0f / 

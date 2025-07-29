@@ -165,17 +165,21 @@ int main(void)
 
 
         //mat4x4_ortho(p, -ratio, ratio, -1.f, 1.f, 1.f, -1.f);
-        matProj = glm::perspective(0.6f,
-            ratio,
-            0.1f,
-            1000.0f);
+        matProj = glm::perspective(
+            0.6f,           // FOV  60 degrees
+            ratio,          // Aspect ratio
+            1.0f,           // "near plane"
+            1000000.0f);       // "far plane"
+
+        
 
         matView = glm::mat4(1.0f);
 
         glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
         glm::vec3 upVector = glm::vec3(0.0f, 1.0f, 0.0f);
 
-        matView = glm::lookAt(g_cameraEye,  
+        matView = glm::lookAt(
+            g_cameraEye,  
             cameraTarget,  
             upVector);     
 
@@ -449,6 +453,10 @@ void LoadModelsIntoScene()
             pFloor->position.x = row * floorTileWidth;
             pFloor->position.z = col * floorTileWidth;
             pFloor->position.y = -10.0f;
+
+            pFloor->specularHihglightRGB = glm::vec3(1.0f, 1.0f, 1.0f);
+            pFloor->specularPower = 1000.0f;
+
             pFloor->meshFileName = "assets/models/Dungeon_models/Floors/SM_Env_Dwarf_Floor_03_xyz_n.ply";
             ::g_pMeshesToDraw.push_back(pFloor);
         }
@@ -505,13 +513,16 @@ void DrawMesh(cMeshObject* pCurrentMesh, GLint program)
 
     glm::mat4 matModel;
     GLint Model_location = glGetUniformLocation(program, "mModel");
+
     GLint useOverrideColor_location = glGetUniformLocation(program, "bUseOverrideColor");
     GLint overrideColor_location = glGetUniformLocation(program, "colorOverride");
 
     if (pCurrentMesh->bOverrideVertexModelColour)
     {
-        glUniform3f(overrideColor_location, pCurrentMesh->colourRGB.r,
-            pCurrentMesh->colourRGB.g, pCurrentMesh->colourRGB.b);
+        glUniform3f(overrideColor_location, 
+            pCurrentMesh->colourRGB.r,
+            pCurrentMesh->colourRGB.g, 
+            pCurrentMesh->colourRGB.b);
 
         glUniform1f(useOverrideColor_location, GL_TRUE); // 1.0f
 
@@ -520,6 +531,17 @@ void DrawMesh(cMeshObject* pCurrentMesh, GLint program)
     {
         glUniform1f(useOverrideColor_location, GL_FALSE);
     }
+
+    // Set the specular value
+    //uniform vec4 vertSpecular;
+    GLint vertSpecular_UL = glGetUniformLocation(program, "vertSpecular");
+    // Copy the object specular to the shader
+    glUniform4f(vertSpecular_UL,
+        pCurrentMesh->specularHihglightRGB.r,
+        pCurrentMesh->specularHihglightRGB.g,
+        pCurrentMesh->specularHihglightRGB.b,
+        pCurrentMesh->specularPower);
+
 
 
 

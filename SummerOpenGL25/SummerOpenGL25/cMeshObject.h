@@ -13,11 +13,14 @@ class cMeshObject
 	cMeshObject();
 	std::string meshFileName;
 	std::string uniqueName;
-	glm::vec3 position;
+	glm::vec3 position;   
 	glm::vec3 orientation; // eurler axis
 	//glm::vec3 scaleXYZ; 
 	float scale; // uniform scale
-	glm::vec3 colourRGB;
+	glm::vec3 colourRGB;	// aka "diffuse"
+	// Now with more specular
+	glm::vec3 specularHihglightRGB = glm::vec3(1.0f, 1.0f, 1.0f);
+	float specularPower = 1.0f;		// "shininess"
 
 	bool bOverrideVertexModelColour;
 	bool bIsWireframe;
