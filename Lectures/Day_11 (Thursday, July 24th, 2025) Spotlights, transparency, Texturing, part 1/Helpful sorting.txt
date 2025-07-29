@@ -1,0 +1,16 @@
+We need to sort the transparent objects from 
+"back" to "front" ("farthest from camera to closest")
+
+Here's The Plan:
+* Draw all the NON-transparent objects 
+	NOT < 1.0f
+* Sort the TRANSPARENT objects from Farthest to nearest
+	alpha < 1.0f
+	
+	float distToCamera = glm::distance( pObject->position - g_cameraEye );
+	
+	- Or 
+	
+	glm::vec3 objectToCameraRay = pObject->position - g_cameraEye;
+	float distToCamera = glm::length(objectToCameraRay);
+

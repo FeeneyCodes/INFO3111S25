@@ -2,15 +2,17 @@
 
 uniform vec3 eyeLocation;
 
-in vec4 vertColor;
+in vec4 vertColor;		/// RGB_A
 in vec4 vertNormal;
 in vec4 vertWorldPosition;
 
+// What we write to the colour buffer (aka "screen")
 out vec4 pixelColour;
 
 // Pass the per object specular 'shininess'
 uniform vec4 vertSpecular;// = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-
+// How transparent this object is 0 to 1
+uniform float alphaTransparency;
 
 vec4 calculateLightContrib( vec3 vertexMaterialColour, vec3 vertexNormal, 
                             vec3 vertexWorldPos, vec4 vertexSpecular);
@@ -48,7 +50,12 @@ void main()
 	
 	pixelColour.rgb = lightContrib.rgb;
 	
-	pixelColour.a = 1.0f;
+	
+//	pixelColour.a = 1.0f;
+	// Alpha or transparency value.
+	// 0.0 - totally invisible
+	// 1.0 - opaque (solid)
+	pixelColour.a = alphaTransparency;
 };
 
 // Feeney gave you this (it's inspired by the basic shader in Mike Bailey's Graphic Shaders book)

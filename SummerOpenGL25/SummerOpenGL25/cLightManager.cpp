@@ -35,7 +35,7 @@ void cLightManager::GetUniformLocations(GLuint shaderProgram)
     this->theLights[1].atten_UL = glGetUniformLocation(shaderProgram, "theLights[1].atten");
     this->theLights[1].direction_UL = glGetUniformLocation(shaderProgram, "theLights[1].direction");
     this->theLights[1].param1_UL = glGetUniformLocation(shaderProgram, "theLights[1].param1");
-    this->theLights[1].param1_UL = glGetUniformLocation(shaderProgram, "theLights[1].param1");
+    this->theLights[1].param2_UL = glGetUniformLocation(shaderProgram, "theLights[1].param2");
 
     this->theLights[2].position_UL = glGetUniformLocation(shaderProgram, "theLights[2].position");
     this->theLights[2].diffuse_UL = glGetUniformLocation(shaderProgram, "theLights[2].diffuse");
@@ -43,7 +43,7 @@ void cLightManager::GetUniformLocations(GLuint shaderProgram)
     this->theLights[2].atten_UL = glGetUniformLocation(shaderProgram, "theLights[2].atten");
     this->theLights[2].direction_UL = glGetUniformLocation(shaderProgram, "theLights[2].direction");
     this->theLights[2].param1_UL = glGetUniformLocation(shaderProgram, "theLights[2].param1");
-    this->theLights[2].param1_UL = glGetUniformLocation(shaderProgram, "theLights[2].param1");
+    this->theLights[2].param2_UL = glGetUniformLocation(shaderProgram, "theLights[2].param2");
 
     this->theLights[3].position_UL = glGetUniformLocation(shaderProgram, "theLights[3].position");
     this->theLights[3].diffuse_UL = glGetUniformLocation(shaderProgram, "theLights[3].diffuse");
@@ -51,7 +51,7 @@ void cLightManager::GetUniformLocations(GLuint shaderProgram)
     this->theLights[3].atten_UL = glGetUniformLocation(shaderProgram, "theLights[3].atten");
     this->theLights[3].direction_UL = glGetUniformLocation(shaderProgram, "theLights[3].direction");
     this->theLights[3].param1_UL = glGetUniformLocation(shaderProgram, "theLights[3].param1");
-    this->theLights[3].param1_UL = glGetUniformLocation(shaderProgram, "theLights[3].param1");
+    this->theLights[3].param2_UL = glGetUniformLocation(shaderProgram, "theLights[3].param2");
 
     this->theLights[4].position_UL = glGetUniformLocation(shaderProgram, "theLights[4].position");
     this->theLights[4].diffuse_UL = glGetUniformLocation(shaderProgram, "theLights[4].diffuse");
@@ -59,7 +59,7 @@ void cLightManager::GetUniformLocations(GLuint shaderProgram)
     this->theLights[4].atten_UL = glGetUniformLocation(shaderProgram, "theLights[4].atten");
     this->theLights[4].direction_UL = glGetUniformLocation(shaderProgram, "theLights[4].direction");
     this->theLights[4].param1_UL = glGetUniformLocation(shaderProgram, "theLights[4].param1");
-    this->theLights[4].param1_UL = glGetUniformLocation(shaderProgram, "theLights[4].param1");
+    this->theLights[4].param2_UL = glGetUniformLocation(shaderProgram, "theLights[4].param2");
 
     this->theLights[5].position_UL = glGetUniformLocation(shaderProgram, "theLights[5].position");
     this->theLights[5].diffuse_UL = glGetUniformLocation(shaderProgram, "theLights[5].diffuse");
@@ -67,7 +67,7 @@ void cLightManager::GetUniformLocations(GLuint shaderProgram)
     this->theLights[5].atten_UL = glGetUniformLocation(shaderProgram, "theLights[5].atten");
     this->theLights[5].direction_UL = glGetUniformLocation(shaderProgram, "theLights[5].direction");
     this->theLights[5].param1_UL = glGetUniformLocation(shaderProgram, "theLights[5].param1");
-    this->theLights[5].param1_UL = glGetUniformLocation(shaderProgram, "theLights[5].param1");
+    this->theLights[5].param2_UL = glGetUniformLocation(shaderProgram, "theLights[5].param2");
 
     this->theLights[6].position_UL = glGetUniformLocation(shaderProgram, "theLights[6].position");
     this->theLights[6].diffuse_UL = glGetUniformLocation(shaderProgram, "theLights[6].diffuse");
@@ -83,7 +83,7 @@ void cLightManager::GetUniformLocations(GLuint shaderProgram)
     this->theLights[7].atten_UL = glGetUniformLocation(shaderProgram, "theLights[7].atten");
     this->theLights[7].direction_UL = glGetUniformLocation(shaderProgram, "theLights[7].direction");
     this->theLights[7].param1_UL = glGetUniformLocation(shaderProgram, "theLights[7].param1");
-    this->theLights[7].param1_UL = glGetUniformLocation(shaderProgram, "theLights[7].param1");
+    this->theLights[7].param2_UL = glGetUniformLocation(shaderProgram, "theLights[7].param2");
 
     this->theLights[8].position_UL = glGetUniformLocation(shaderProgram, "theLights[8].position");
     this->theLights[8].diffuse_UL = glGetUniformLocation(shaderProgram, "theLights[8].diffuse");
@@ -91,7 +91,7 @@ void cLightManager::GetUniformLocations(GLuint shaderProgram)
     this->theLights[8].atten_UL = glGetUniformLocation(shaderProgram, "theLights[8].atten");
     this->theLights[8].direction_UL = glGetUniformLocation(shaderProgram, "theLights[8].direction");
     this->theLights[8].param1_UL = glGetUniformLocation(shaderProgram, "theLights[8].param1");
-    this->theLights[8].param1_UL = glGetUniformLocation(shaderProgram, "theLights[8].param1");
+    this->theLights[8].param2_UL = glGetUniformLocation(shaderProgram, "theLights[8].param2");
 
     this->theLights[9].position_UL = glGetUniformLocation(shaderProgram, "theLights[9].position");
     this->theLights[9].diffuse_UL = glGetUniformLocation(shaderProgram, "theLights[9].diffuse");
@@ -99,7 +99,7 @@ void cLightManager::GetUniformLocations(GLuint shaderProgram)
     this->theLights[9].atten_UL = glGetUniformLocation(shaderProgram, "theLights[9].atten");
     this->theLights[9].direction_UL = glGetUniformLocation(shaderProgram, "theLights[9].direction");
     this->theLights[9].param1_UL = glGetUniformLocation(shaderProgram, "theLights[9].param1");
-    this->theLights[9].param1_UL = glGetUniformLocation(shaderProgram, "theLights[9].param1");
+    this->theLights[9].param2_UL = glGetUniformLocation(shaderProgram, "theLights[9].param2");
    
 }
 

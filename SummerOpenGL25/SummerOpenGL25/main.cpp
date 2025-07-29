@@ -140,12 +140,29 @@ int main(void)
 
     ::g_pLights->theLights[0].param2.x = 1.0f; // turn on
     ::g_pLights->theLights[0].param1.x = 0.0f; // light type = point light
-    ::g_pLights->theLights[0].position = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+    ::g_pLights->theLights[0].position = glm::vec4(0.0f, 50.0f, -25.0f, 1.0f);
     ::g_pLights->theLights[0].diffuse = glm::vec4(1.0f);
 
     ::g_pLights->theLights[0].atten.x = 0.0f; // constant
     ::g_pLights->theLights[0].atten.y = 0.01f; // linear
-    ::g_pLights->theLights[0].atten.z = 0.005f; // quadratic
+    ::g_pLights->theLights[0].atten.z = 0.001f; // quadratic
+
+
+
+    ::g_pLights->theLights[1].param2.x = 1.0f; // turn on
+    ::g_pLights->theLights[1].param1.x = 0.0f; // light type = point light
+    ::g_pLights->theLights[1].position = glm::vec4(0.0f, 50.0f, 50.0f, 1.0f);
+    ::g_pLights->theLights[1].diffuse = glm::vec4(1.0f);
+
+    ::g_pLights->theLights[1].atten.x = 0.0f; // constant
+    ::g_pLights->theLights[1].atten.y = 0.003f; // linear
+    ::g_pLights->theLights[1].atten.z = 0.005f; // quadratic
+
+
+    // Enable blend function
+    glEnable(GL_BLEND);
+    // "alpha" blending transparancy
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -193,11 +210,71 @@ int main(void)
 
         ::g_pLights->UpdateShaderUniforms(program);
 
+        std::vector<cMeshObject*> vecSolidThings;
+        std::vector<cMeshObject*> vecTransparentThings;
+
+
+ //       struct cThingDistance
+ //       {
+ //           float distToCamera;
+ //           cMeshObject* pMeshObject;
+ //       };
+ //       std::vector<cThingDistance> vecTransparentThings;
+
+        // Separate transparent from non-transparent
         for (unsigned int index = 0; index != ::g_pMeshesToDraw.size(); index++)
         {
             cMeshObject* pCurrentMesh = ::g_pMeshesToDraw[index];
+            // Transparent? 
+            if (pCurrentMesh->transparencyAlpha < 1.0f)
+            {
+                // It's transparent
+                vecTransparentThings.push_back(pCurrentMesh);
+            }
+            else
+            {
+                // It's solid
+                vecSolidThings.push_back(pCurrentMesh);
+            }
+        }
+
+        // Sort transparent from "far from camera to near"
+        for (unsigned int index = 0; index != vecTransparentThings.size(); index++)
+        {
+            cMeshObject* pCurrentMesh = vecTransparentThings[index];
+            // Distance from object to camera
+            float distToCamera = glm::distance(::g_cameraEye, pCurrentMesh->position);
+        }
+        // Sort them
+        // 1 pass of the bubble sort
+        // Monkey sort
+        // Beer at the camp fire sort
+        
+        // Memory = zero
+        // CPU bound
+        // 500-1000
+
+
+
+        for (unsigned int index = 0; index != vecSolidThings.size(); index++)
+        {
+            cMeshObject* pCurrentMesh = vecSolidThings[index];
             DrawMesh(pCurrentMesh, program);
         }
+
+        for (unsigned int index = 0; index != vecTransparentThings.size(); index++)
+        {
+            cMeshObject* pCurrentMesh = vecTransparentThings[index];
+            DrawMesh(pCurrentMesh, program);
+        }
+
+
+
+//        for (unsigned int index = 0; index != ::g_pMeshesToDraw.size(); index++)
+//        {
+//            cMeshObject* pCurrentMesh = ::g_pMeshesToDraw[index];
+//            DrawMesh(pCurrentMesh, program);
+//        }
 
 
         if (::g_ShowLightDebugSpheres)
@@ -397,6 +474,16 @@ void LoadFilesIntoVAOManager(GLuint program)
     {
         std::cout << "SmoothSphere NOT loaded into VAO!" << std::endl;
     }
+
+    sModelDrawInfo bottleMesh;
+
+    if (!::g_pMeshManager->LoadModelIntoVAO("assets/models/Dungeon_models/Props and Decorations/SM_Item_Bottle_01__.ply",
+        bottleMesh, program, true, true, false, 1.0f))
+    {
+        std::cout << "SmoothSphere NOT loaded into VAO!" << std::endl;
+    }
+
+    return;
 }
 
 void LoadModelsIntoScene()
@@ -461,6 +548,36 @@ void LoadModelsIntoScene()
             ::g_pMeshesToDraw.push_back(pFloor);
         }
     }
+
+    for (float z = -100.0f; z < 101.0f; z += 10.0f)
+    {
+        cMeshObject* pCow = new cMeshObject();
+        pCow->bOverrideVertexModelColour = true;
+        pCow->colourRGB =
+            glm::vec3(
+                ::g_getRandBetween(0.3f, 1.0f),
+                ::g_getRandBetween(0.3f, 1.0f),
+                ::g_getRandBetween(0.3f, 1.0f));
+        pCow->specularHihglightRGB = glm::vec3(1.0f, 1.0f, 1.0f);
+        pCow->specularPower = ::g_getRandBetween(1.0, 10'000.0f);
+        pCow->position.x = 0.f;
+        pCow->position.y = 0.0f;
+        pCow->position.z = z;
+        // Transparent cows
+        pCow->transparencyAlpha = 0.6f;
+        pCow->meshFileName = "assets/models/cow_xyz_n_rgba.ply";
+        ::g_pMeshesToDraw.push_back(pCow);
+    }
+
+
+    cMeshObject* pBottle = new cMeshObject();
+    pBottle->bOverrideVertexModelColour = true;
+    pBottle->colourRGB = glm::vec3(1.0f, 1.0f, 1.0f);
+    pBottle->meshFileName = "assets/models/Dungeon_models/Props and Decorations/SM_Item_Bottle_01__.ply";
+    ::g_pMeshesToDraw.push_back(pBottle);
+
+
+
 
     cMeshObject* pCow = new cMeshObject();
     pCow->bOverrideVertexModelColour = true;
@@ -531,6 +648,13 @@ void DrawMesh(cMeshObject* pCurrentMesh, GLint program)
     {
         glUniform1f(useOverrideColor_location, GL_FALSE);
     }
+
+    // Copy over the transparency
+    // uniform float alphaTransparency;
+    GLint alphaTransparency_UL 
+        = glGetUniformLocation(program, "alphaTransparency");
+    // Set it
+    glUniform1f(alphaTransparency_UL, pCurrentMesh->transparencyAlpha);
 
     // Set the specular value
     //uniform vec4 vertSpecular;

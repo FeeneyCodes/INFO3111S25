@@ -18,6 +18,7 @@ class cMeshObject
 	//glm::vec3 scaleXYZ; 
 	float scale; // uniform scale
 	glm::vec3 colourRGB;	// aka "diffuse"
+	float transparencyAlpha = 1.0f;	// 0.0f to 1.0f (invisible to solid)
 	// Now with more specular
 	glm::vec3 specularHihglightRGB = glm::vec3(1.0f, 1.0f, 1.0f);
 	float specularPower = 1.0f;		// "shininess"
