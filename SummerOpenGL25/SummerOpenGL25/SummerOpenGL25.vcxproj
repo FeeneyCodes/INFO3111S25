@@ -134,12 +134,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="cBasicFlyCamera.cpp" />
+    <ClCompile Include="cBasicTextureManager\C24BitBMPpixel.cpp" />
+    <ClCompile Include="cBasicTextureManager\cBasicTextureManager.cpp" />
+    <ClCompile Include="cBasicTextureManager\CTextureFromBMP.cpp" />
     <ClCompile Include="cLightHelper\cLightHelper.cpp" />
     <ClCompile Include="cLightManager.cpp" />
     <ClCompile Include="cMeshObject.cpp" />
     <ClCompile Include="cShaderManager\cShader.cpp" />
     <ClCompile Include="cShaderManager\cShaderManager.cpp" />
     <ClCompile Include="cVAOManager\cVAOManager.cpp" />
+    <ClCompile Include="cVAOManager\GenTextureCoordsSpherical.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="glfw_keyboard_callback_function.cpp" />
     <ClCompile Include="main.cpp" />
@@ -148,6 +152,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cBasicFlyCamera.h" />
+    <ClInclude Include="cBasicTextureManager\C24BitBMPpixel.h" />
+    <ClInclude Include="cBasicTextureManager\cBasicTextureManager.h" />
+    <ClInclude Include="cBasicTextureManager\CTextureFromBMP.h" />
     <ClInclude Include="cLightHelper\cLightHelper.h" />
     <ClInclude Include="cLightManager.h" />
     <ClInclude Include="cMeshObject.h" />

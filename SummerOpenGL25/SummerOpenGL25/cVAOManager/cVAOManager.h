@@ -16,6 +16,8 @@ struct sVert
 	float x, y, z, w;
 	float nx, ny, nz, nw;
 	float r, g, b, a;
+	// Now with texure coordinates!
+	float u, v;
 };
 
 
@@ -47,9 +49,15 @@ struct sModelDrawInfo
 	unsigned int* pIndices;
 };
 
+
+
 class cVAOManager
 {
 public:
+	enum enumTEXCOORDBIAS
+	{
+		POSITIVE_X, POSITIVE_Y, POSITIVE_Z
+	};
 
 	bool LoadModelIntoVAO(std::string fileName,
 		sModelDrawInfo& drawInfo,
@@ -59,9 +67,14 @@ public:
 		bool hasTextureCoords,				// TODO:
 		float scaling);			// Keep at 1.0 for no change
 
+	void GenTextureCoordsSpherical(sModelDrawInfo& meshInfo,
+		enumTEXCOORDBIAS uBias, enumTEXCOORDBIAS vBias,
+		bool basedOnNormals, float scale, bool fast);
+
 	// We don't want to return an int, likely
 	bool FindDrawInfoByModelName(std::string filename,
 								 sModelDrawInfo &drawInfo);
+
 
 	std::string getLastError(bool bAndClear = true);
 

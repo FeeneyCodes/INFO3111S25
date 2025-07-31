@@ -25,6 +25,9 @@
     <Filter Include="FlyCamera">
       <UniqueIdentifier>{8b9b7961-3585-42d7-8ca3-35775822ee79}</UniqueIdentifier>
     </Filter>
+    <Filter Include="TextureStuff">
+      <UniqueIdentifier>{4f39f855-d00a-4c52-ae56-b0427d66f43a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -63,6 +66,18 @@
     <ClCompile Include="mouse_keyboard_async.cpp">
       <Filter>FlyCamera</Filter>
     </ClCompile>
+    <ClCompile Include="cVAOManager\GenTextureCoordsSpherical.cpp">
+      <Filter>MeshManager</Filter>
+    </ClCompile>
+    <ClCompile Include="cBasicTextureManager\C24BitBMPpixel.cpp">
+      <Filter>TextureStuff</Filter>
+    </ClCompile>
+    <ClCompile Include="cBasicTextureManager\cBasicTextureManager.cpp">
+      <Filter>TextureStuff</Filter>
+    </ClCompile>
+    <ClCompile Include="cBasicTextureManager\CTextureFromBMP.cpp">
+      <Filter>TextureStuff</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cShaderManager\cShaderManager.h">
@@ -88,6 +103,15 @@
     </ClInclude>
     <ClInclude Include="globalStuff.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cBasicTextureManager\C24BitBMPpixel.h">
+      <Filter>TextureStuff</Filter>
+    </ClInclude>
+    <ClInclude Include="cBasicTextureManager\cBasicTextureManager.h">
+      <Filter>TextureStuff</Filter>
+    </ClInclude>
+    <ClInclude Include="cBasicTextureManager\CTextureFromBMP.h">
+      <Filter>TextureStuff</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -4,6 +4,7 @@
 
 #include <fstream>
 
+#include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
@@ -112,6 +113,9 @@ bool cVAOManager::LoadModelIntoVAO(
 	GLint vpos_location = glGetAttribLocation(shaderProgramID, "vPos");	// program
 	GLint vcol_location = glGetAttribLocation(shaderProgramID, "vCol");	// program;
 	GLint vnorm_location = glGetAttribLocation(shaderProgramID, "vNorm");
+	// Now texture coords
+	GLint vTextCoords_location = glGetAttribLocation(shaderProgramID, "vTextCoords");
+	
 
 	// Set the vertex attributes for this shader
 	glEnableVertexAttribArray(vpos_location);	// vPos
@@ -132,6 +136,17 @@ bool cVAOManager::LoadModelIntoVAO(
 							sizeof(sVert),
 						   ( void* )offsetof(sVert,r));
 
+	// Tell it where the uv values are
+	glEnableVertexAttribArray(vTextCoords_location);	// vTextCoords
+	glVertexAttribPointer(vTextCoords_location,			// vTextCoords
+	                      2,		
+						   GL_FLOAT, 
+		                   GL_FALSE,
+							sizeof(sVert),
+						   ( void* )offsetof(sVert,u));
+
+
+
 	// Now that all the parts are set up, set the VAO to zero
 	glBindVertexArray(0);
 
@@ -141,6 +156,7 @@ bool cVAOManager::LoadModelIntoVAO(
 	glDisableVertexAttribArray(vpos_location);
 	glDisableVertexAttribArray(vnorm_location);
 	glDisableVertexAttribArray(vcol_location);
+	glDisableVertexAttribArray(vTextCoords_location);
 
 
 	// Store the draw information into the map
@@ -235,6 +251,7 @@ bool cVAOManager::m_LoadTheModel(std::string fileName,
 		glm::vec3 pos;
 		glm::vec3 norm;
 		glm::vec4 colour;
+		glm::vec2 textureCoords;
 	};
 
 	std::vector<sVertPly> vecTempPlyVerts;
@@ -274,10 +291,12 @@ bool cVAOManager::m_LoadTheModel(std::string fileName,
 			tempVert.colour.a /= 255.0f;
 		}
 
-		//if (hasTextueCoords)
-		//{
-
-		//}
+		if (hasTextures)
+		{
+			thePlyFile
+				>> tempVert.textureCoords.x		// U or S
+				>> tempVert.textureCoords.y;	// V or T
+		}
 
 		// Add too... what? 
 		vecTempPlyVerts.push_back(tempVert);
@@ -318,6 +337,31 @@ bool cVAOManager::m_LoadTheModel(std::string fileName,
 			drawInfo.pVertices[index].g = vecTempPlyVerts[index].colour.g;
 			drawInfo.pVertices[index].b = vecTempPlyVerts[index].colour.b;
 			drawInfo.pVertices[index].a = vecTempPlyVerts[index].colour.a;
+		}// for ( unsigned int index...
+	}
+	if (hasNormals && hasColours && hasTextures)
+	{
+		for (unsigned int index = 0; index != drawInfo.numberOfVertices; index++)
+		{
+			drawInfo.pVertices[index].x = vecTempPlyVerts[index].pos.x;
+			drawInfo.pVertices[index].y = vecTempPlyVerts[index].pos.y;
+			drawInfo.pVertices[index].z = vecTempPlyVerts[index].pos.z;
+			drawInfo.pVertices[index].w = 1.0f; // when in doubt, set to 1.0f
+
+			drawInfo.pVertices[index].nx = vecTempPlyVerts[index].norm.x;
+			drawInfo.pVertices[index].ny = vecTempPlyVerts[index].norm.y;
+			drawInfo.pVertices[index].nz = vecTempPlyVerts[index].norm.z;
+			drawInfo.pVertices[index].nw = 1.0f; // when in doubt, set to 1.0f
+
+			drawInfo.pVertices[index].r = vecTempPlyVerts[index].colour.r;
+			drawInfo.pVertices[index].g = vecTempPlyVerts[index].colour.g;
+			drawInfo.pVertices[index].b = vecTempPlyVerts[index].colour.b;
+			drawInfo.pVertices[index].a = vecTempPlyVerts[index].colour.a;
+
+			// Copy the texture stuff as well
+			drawInfo.pVertices[index].u = vecTempPlyVerts[index].textureCoords.x;
+			drawInfo.pVertices[index].v = vecTempPlyVerts[index].textureCoords.y;
+
 		}// for ( unsigned int index...
 	}
 	else if (hasNormals)

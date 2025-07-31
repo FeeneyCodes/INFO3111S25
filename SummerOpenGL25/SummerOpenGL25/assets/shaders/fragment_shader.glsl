@@ -5,6 +5,7 @@ uniform vec3 eyeLocation;
 in vec4 vertColor;		/// RGB_A
 in vec4 vertNormal;
 in vec4 vertWorldPosition;
+in vec2 vertTextCoords;
 
 // What we write to the colour buffer (aka "screen")
 out vec4 pixelColour;
@@ -53,6 +54,10 @@ void main()
 	
 	
 	pixelColour = vec4(vertColor);
+	
+	pixelColour.r = vertTextCoords.u;
+	pixelColour.g = vertTextCoords.v;
+	pixelColour.b = 0.0f;
 	
 	vec4 lightContrib = calculateLightContrib(vertColor.rgb, vertNormal.xyz, vertWorldPosition.xyz, vertSpecular);
 	
