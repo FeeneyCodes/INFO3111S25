@@ -47,7 +47,6 @@ struct sModelDrawInfo
 	unsigned int* pIndices;
 };
 
-
 class cVAOManager
 {
 public:

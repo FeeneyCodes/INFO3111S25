@@ -28,6 +28,9 @@
 bool g_ShowLightDebugSpheres = false;
 
 
+cBasicFlyCamera* g_pFlyCamera = NULL;
+
+
 double g_getRandBetween0and1(void)
 {
     return ((double)rand() / ((double)RAND_MAX));
@@ -51,7 +54,8 @@ extern unsigned int g_selectedLightIndex;
 
 unsigned int g_NumVerticiesToDraw = 0;
 unsigned int g_SizeOfVertexArrayInBytes = 0;
-glm::vec3 g_cameraEye = glm::vec3(0.0, 0.0, -30.0f);
+// Now getting this from the fly camera
+//glm::vec3 g_cameraEye = glm::vec3(0.0, 0.0, -30.0f);
 
 void LoadFilesIntoVAOManager(GLuint program);
 
@@ -65,7 +69,22 @@ static void error_callback(int error, const char* description)
     fprintf(stderr, "Error: %s\n", description);
 }
 
+// GLFW callback declarations:
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+// Set the callbacks for the mouse
+// https://www.glfw.org/docs/3.3/input_guide.html#input_mouse
+// Set with glfwSetCursorPosCallback(window, cursor_position_callback);
+void cursor_position_callback(GLFWwindow* window, double xpos, double ypos);
+// Set with glfwSetCursorEnterCallback(window, cursor_enter_callback);
+void cursor_enter_callback(GLFWwindow* window, int entered);
+// Set with glfwSetMouseButtonCallback(window, mouse_button_callback);
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
+// Set with glfwSetScrollCallback(window, scroll_callback);
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+
+// In the mouse_keyboard_async.cpp file:
+void handleKeyboardAsync(GLFWwindow* window);
+void handleMouseAsync(GLFWwindow* window);
 
 
 int main(void)
@@ -97,12 +116,21 @@ int main(void)
         exit(EXIT_FAILURE);
     }
 
+    ::g_pFlyCamera = new cBasicFlyCamera();
+    ::g_pFlyCamera->setEyeLocation(0.0f, 0.0f, -30.0f);
+
     glfwSetKeyCallback(window, key_callback);
+    // And the mouse callbacks, too:
+    glfwSetCursorPosCallback(window, cursor_position_callback);   
+    glfwSetCursorEnterCallback(window, cursor_enter_callback);    
+    glfwSetMouseButtonCallback(window, mouse_button_callback);    
+    glfwSetScrollCallback(window, scroll_callback);
+
     glfwMakeContextCurrent(window);
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     glfwSwapInterval(1);
 
-    
+
 
     ::g_pTheShaderManager = new cShaderManager();
 
@@ -192,18 +220,29 @@ int main(void)
 
         matView = glm::mat4(1.0f);
 
-        glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
+//      Now coming from the FlyCamera
+//        glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
         glm::vec3 upVector = glm::vec3(0.0f, 1.0f, 0.0f);
 
+//        matView = glm::lookAt(
+//            g_cameraEye,  
+//            cameraTarget,  
+//            upVector);     
         matView = glm::lookAt(
-            g_cameraEye,  
-            cameraTarget,  
+            ::g_pFlyCamera->getEyeLocation(),  
+            ::g_pFlyCamera->getTargetLocation(),  
             upVector);     
 
         GLint eyeLocation_UL = glGetUniformLocation(program, "eyeLocation");
 
+//        glUniform3f(eyeLocation_UL,
+//            ::g_cameraEye.x, ::g_cameraEye.y, ::g_cameraEye.z);
+
+        glm::vec3 currentEyeLocation = ::g_pFlyCamera->getEyeLocation();
         glUniform3f(eyeLocation_UL,
-            ::g_cameraEye.x, ::g_cameraEye.y, ::g_cameraEye.z);
+            currentEyeLocation.x,
+            currentEyeLocation.y,
+            currentEyeLocation.z);
 
         glUniformMatrix4fv(proj_location, 1, GL_FALSE, glm::value_ptr(matProj));
         glUniformMatrix4fv(view_location, 1, GL_FALSE, glm::value_ptr(matView));
@@ -243,7 +282,7 @@ int main(void)
         {
             cMeshObject* pCurrentMesh = vecTransparentThings[index];
             // Distance from object to camera
-            float distToCamera = glm::distance(::g_cameraEye, pCurrentMesh->position);
+//            float distToCamera = glm::distance(::g_cameraEye, pCurrentMesh->position);
         }
         // Sort them
         // 1 pass of the bubble sort
@@ -370,8 +409,12 @@ int main(void)
  
         std::stringstream ssWindowTitle;
 
-        ssWindowTitle << "Camera (XYZ)" << ::g_cameraEye.x << ","
-            << ::g_cameraEye.y << ", " << ::g_cameraEye.z
+//        ssWindowTitle << "Camera (XYZ)" << ::g_cameraEye.x << ","
+//            << ::g_cameraEye.y << ", " << ::g_cameraEye.z
+        ssWindowTitle << "Camera (XYZ)" 
+            << ::g_pFlyCamera->getEyeLocation().x << ","
+            << ::g_pFlyCamera->getEyeLocation().y << ", " 
+            << ::g_pFlyCamera->getEyeLocation().z
             << " "
             << "Light[" << ::g_selectedLightIndex << "]: "
             << "(xyz): " 
@@ -415,9 +458,14 @@ int main(void)
         }*/
 
 
-
+        // Switch the back buffers (double buffered framebuffer)
         glfwSwapBuffers(window);
+        // Process mouse and keyboard events
         glfwPollEvents();
+
+        handleKeyboardAsync(window);
+        handleMouseAsync(window);
+
     }
     glfwDestroyWindow(window);
     glfwTerminate();

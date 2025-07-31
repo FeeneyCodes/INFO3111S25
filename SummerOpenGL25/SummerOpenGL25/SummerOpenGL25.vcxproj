@@ -133,6 +133,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="cBasicFlyCamera.cpp" />
     <ClCompile Include="cLightHelper\cLightHelper.cpp" />
     <ClCompile Include="cLightManager.cpp" />
     <ClCompile Include="cMeshObject.cpp" />
@@ -142,9 +143,11 @@
     <ClCompile Include="glad.c" />
     <ClCompile Include="glfw_keyboard_callback_function.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="mouse_keyboard_async.cpp" />
     <ClCompile Include="old-loading.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cBasicFlyCamera.h" />
     <ClInclude Include="cLightHelper\cLightHelper.h" />
     <ClInclude Include="cLightManager.h" />
     <ClInclude Include="cMeshObject.h" />

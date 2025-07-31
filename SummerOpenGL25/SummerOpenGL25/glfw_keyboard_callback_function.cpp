@@ -8,7 +8,8 @@
 #include "cMeshObject.h"
 #include "cLightManager.h"
 
-extern glm::vec3 g_cameraEye;
+// 
+// extern glm::vec3 g_cameraEye;
 extern std::vector<cMeshObject*> g_pMeshesToDraw;
 extern cLightManager* g_pLights;
 
@@ -100,22 +101,22 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
         if (key == GLFW_KEY_1)
         {
-            ::g_pLights->theLights[::g_selectedLightIndex].atten.y *= 0.99; // -1% (99%)
+            ::g_pLights->theLights[::g_selectedLightIndex].atten.y *= 0.99f; // -1% (99%)
         }
 
         if (key == GLFW_KEY_2)
         {
-            ::g_pLights->theLights[::g_selectedLightIndex].atten.y *= 1.01; // +1% (101%)
+            ::g_pLights->theLights[::g_selectedLightIndex].atten.y *= 1.01f; // +1% (101%)
         }
 
         if (key == GLFW_KEY_3)
         {
-            ::g_pLights->theLights[::g_selectedLightIndex].atten.z *= 0.99;    // -0.1%
+            ::g_pLights->theLights[::g_selectedLightIndex].atten.z *= 0.99f;    // -0.1%
         }
 
         if (key == GLFW_KEY_4)
         {
-            ::g_pLights->theLights[::g_selectedLightIndex].atten.z *= 1.01;   // +0.1%
+            ::g_pLights->theLights[::g_selectedLightIndex].atten.z *= 1.01f;   // +0.1%
         }
 
         // Select a diffent light
@@ -269,35 +270,35 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
     if (!areAnyModifiersDown(mods))
     {
-        if (key == GLFW_KEY_A)
-        {
-            ::g_cameraEye.x += camera_speed;
-        }
-
-        if (key == GLFW_KEY_D)
-        {
-            ::g_cameraEye.x -= camera_speed;
-        }
-
-        if (key == GLFW_KEY_W)
-        {
-            ::g_cameraEye.z += camera_speed;
-        }
-
-        if (key == GLFW_KEY_S)
-        {
-            ::g_cameraEye.z -= camera_speed;
-        }
-
-        if (key == GLFW_KEY_Q)
-        {
-            ::g_cameraEye.y += camera_speed;
-        }
-
-        if (key == GLFW_KEY_E)
-        {
-            ::g_cameraEye.y -= camera_speed;
-        }
+ //       if (key == GLFW_KEY_A)
+ //       {
+ //           ::g_cameraEye.x += camera_speed;
+ //       }
+ //
+ //       if (key == GLFW_KEY_D)
+ //       {
+ //           ::g_cameraEye.x -= camera_speed;
+ //       }
+ //
+ //       if (key == GLFW_KEY_W)
+ //       {
+ //           ::g_cameraEye.z += camera_speed;
+ //       }
+ //
+ //       if (key == GLFW_KEY_S)
+ //       {
+ //           ::g_cameraEye.z -= camera_speed;
+ //       }
+ //
+ //       if (key == GLFW_KEY_Q)
+ //       {
+ //           ::g_cameraEye.y += camera_speed;
+ //       }
+ //
+ //       if (key == GLFW_KEY_E)
+ //       {
+ //           ::g_cameraEye.y -= camera_speed;
+ //       }
     }
 
  
