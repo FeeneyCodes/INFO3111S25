@@ -44,6 +44,14 @@ void main()
 	
 //	vec4 vertSpecular = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	
+	// If the Y is between 5 and 10, then don't draw it
+//	if ( vertWorldPosition.y >= 3.0f && vertWorldPosition.y <=5.0f )
+//	{
+//		discard;
+//	}
+	
+	
+	
 	pixelColour = vec4(vertColor);
 	
 	vec4 lightContrib = calculateLightContrib(vertColor.rgb, vertNormal.xyz, vertWorldPosition.xyz, vertSpecular);

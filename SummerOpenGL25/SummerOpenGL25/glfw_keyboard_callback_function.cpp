@@ -16,7 +16,7 @@ extern cLightManager* g_pLights;
 
 
 unsigned int g_selectedObjectIndex = 0;
-unsigned int g_selectedLightIndex = 0;
+unsigned int g_selectedLightIndex = 2;
 
 
 bool isShiftDown(int mods)
@@ -118,6 +118,29 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         {
             ::g_pLights->theLights[::g_selectedLightIndex].atten.z *= 1.01f;   // +0.1%
         }
+        // ONLY FOR SPOT LIGHTS
+        // 5, 6, 7, 8
+        if (key == GLFW_KEY_5)
+        {
+            // Outer angle .1 degree smaller
+            ::g_pLights->theLights[::g_selectedLightIndex].param1.z -= 0.1f;   
+        }
+        if (key == GLFW_KEY_8)
+        {
+            // Outer angle .1 degree bigger
+            ::g_pLights->theLights[::g_selectedLightIndex].param1.z += 0.1f;   
+        }
+        if (key == GLFW_KEY_6)
+        {
+            // Outer angle .1 degree smaller
+            ::g_pLights->theLights[::g_selectedLightIndex].param1.y -= 0.1f;   
+        }
+        if (key == GLFW_KEY_7)
+        {
+            // Outer angle .1 degree bigger
+            ::g_pLights->theLights[::g_selectedLightIndex].param1.y += 0.1f;   
+        }
+
 
         // Select a diffent light
         if (key == GLFW_KEY_P && action == GLFW_RELEASE)

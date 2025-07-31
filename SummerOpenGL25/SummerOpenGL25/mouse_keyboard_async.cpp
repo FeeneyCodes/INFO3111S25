@@ -85,7 +85,7 @@ void handleMouseAsync(GLFWwindow* window)
     //        glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
 
 
-        double xpos, ypos;
+//        double xpos, ypos;
 //        glfwGetCursorPos(window, &xpos, &ypos);
 
 //        std::cout << "Async mouse location (x,y): " << xpos << ", " << ypos << std::endl;

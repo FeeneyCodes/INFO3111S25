@@ -17,6 +17,7 @@
 #include <sstream>
 #include <vector>
 #include <iostream>
+#include <algorithm>
 
 #include "cShaderManager/cShaderManager.h"
 #include "cVAOManager/cVAOManager.h"
@@ -85,6 +86,33 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 // In the mouse_keyboard_async.cpp file:
 void handleKeyboardAsync(GLFWwindow* window);
 void handleMouseAsync(GLFWwindow* window);
+
+
+// Sort predicate fucntion shell
+//  std::vector<cMeshObject*> vecTransparentThings;
+bool pred_isObjectA_Less_Than_ObjectB(cMeshObject* pA, cMeshObject* pB)
+{
+    // If A is "less than" B (whatever that means
+    return true;
+}
+
+// Returns NULL if we didn't find the object
+cMeshObject* g_pFindObjectByUniqueName(std::string theNameToFind)
+{
+    for (cMeshObject* pTestMesh : ::g_pMeshesToDraw)
+    {
+        // Is this it?
+        if (pTestMesh->uniqueName == theNameToFind)
+        {
+            // Yup
+            return pTestMesh;
+        }
+    }
+        // Didn't find it
+    return NULL;
+
+}
+
 
 
 int main(void)
@@ -186,11 +214,37 @@ int main(void)
     ::g_pLights->theLights[1].atten.y = 0.003f; // linear
     ::g_pLights->theLights[1].atten.z = 0.005f; // quadratic
 
+    ::g_pLights->theLights[2].param2.x = 1.0f; // turn on
+    ::g_pLights->theLights[2].param1.x = 1.0f; // 1 = SPOTLIGHT (for our shader)
+    // Other spotlight thing
+    // Direction is relative to the light
+    ::g_pLights->theLights[2].direction
+        = glm::vec4(0.0, -1.0f, 0.0f, 1.0f);
+    // Angles from the Light To Direction "ray"
+    // y = inner angle, z = outer angle
+    ::g_pLights->theLights[2].param1.z = 10.0f; // Outer
+    ::g_pLights->theLights[2].param1.z = 5.0f;  // Inner
 
-    // Enable blend function
-    glEnable(GL_BLEND);
-    // "alpha" blending transparancy
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    ::g_pLights->theLights[2].position = glm::vec4(0.0f, 50.0f, 0.0f, 1.0f);
+    ::g_pLights->theLights[2].diffuse = glm::vec4(1.0f);
+
+    ::g_pLights->theLights[2].atten.x = 0.0f; // constant
+    ::g_pLights->theLights[2].atten.y = 0.003f; // linear
+    ::g_pLights->theLights[2].atten.z = 0.0005f; // quadratic
+
+
+
+
+//    // Enable blend function
+//    glEnable(GL_BLEND);
+//    // "alpha" blending transparancy
+//    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+//    const unsigned int MAX_NUMNBER_OF_SOLID_OBJECT = 1000000;
+//    cMeshObject* arrayOfSolidThing[MAX_NUMNBER_OF_SOLID_OBJECT];
+//    cMeshObject* arrayOfTransparent[MAX_NUMNBER_OF_SOLID_OBJECT];
+
 
     while (!glfwWindowShouldClose(window))
     {
@@ -284,6 +338,10 @@ int main(void)
             // Distance from object to camera
 //            float distToCamera = glm::distance(::g_cameraEye, pCurrentMesh->position);
         }
+//        std::sort(vecTransparentThings.begin(),
+//            vecTransparentThings.end(),
+ //           pred_isObjectA_Less_Than_ObjectB );
+
         // Sort them
         // 1 pass of the bubble sort
         // Monkey sort
@@ -294,18 +352,29 @@ int main(void)
         // 500-1000
 
 
-
+        // Draw NON transparent (solid) thing FIRST
         for (unsigned int index = 0; index != vecSolidThings.size(); index++)
         {
             cMeshObject* pCurrentMesh = vecSolidThings[index];
             DrawMesh(pCurrentMesh, program);
         }
 
+
+        // Enable blend function
+        glEnable(GL_BLEND);
+        // "alpha" blending transparancy
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        // ALl transparent things second
         for (unsigned int index = 0; index != vecTransparentThings.size(); index++)
         {
             cMeshObject* pCurrentMesh = vecTransparentThings[index];
             DrawMesh(pCurrentMesh, program);
         }
+
+        // Disable it again
+        glDisable(GL_BLEND);
+
 
 
 
@@ -402,6 +471,21 @@ int main(void)
 //        ::g_pLights->theLights[::g_selectedLightIndex].position.x += 0.01f;
 
         
+
+        // Per frame update
+        // 
+        // Point the spotlight at Betsy the cow
+        cMeshObject* pBetsy = ::g_pFindObjectByUniqueName("Betsy");
+        if (pBetsy)       // is (pBetsy != 0) or pBetsy != NULL
+        {
+            // Direction is the ray between the light and the cow
+            glm::vec3 pointTowardCow
+                = pBetsy->position - glm::vec3(::g_pLights->theLights[2].position);
+            // Normalize this ray (make it length 1.0f)
+            pointTowardCow = glm::normalize(pointTowardCow);
+
+            ::g_pLights->theLights[2].direction = glm::vec4(pointTowardCow, 1.0f);
+        }
 
 
 
@@ -577,6 +661,7 @@ void LoadModelsIntoScene()
     char theCell = vecTheMap[3][4];
     
     const float floorTileWidth = 10.0f;
+    const float floorOffset = -50.0f;
 
     for (unsigned int row = 0; row != vecTheMap.size(); row++)
     {
@@ -585,8 +670,8 @@ void LoadModelsIntoScene()
             cMeshObject* pFloor = new cMeshObject();
             pFloor->bOverrideVertexModelColour = true;
             pFloor->colourRGB = glm::vec3(0.7f, 0.7f, 0.7f);
-            pFloor->position.x = row * floorTileWidth;
-            pFloor->position.z = col * floorTileWidth;
+            pFloor->position.x = row * floorTileWidth + floorOffset;
+            pFloor->position.z = col * floorTileWidth + floorOffset;
             pFloor->position.y = -10.0f;
 
             pFloor->specularHihglightRGB = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -632,6 +717,7 @@ void LoadModelsIntoScene()
     pCow->colourRGB = glm::vec3(0.0f, 1.0f, 0.0f);
     pCow->position.x = -10.f;
     pCow->orientation.z = 90.0f;
+    pCow->uniqueName = "Betsy";
     pCow->meshFileName = "assets/models/cow_xyz_n_rgba.ply";
 
     cMeshObject* pCow2 = new cMeshObject();
@@ -664,9 +750,11 @@ void LoadModelsIntoScene()
     cMeshObject* pWarehouse = new cMeshObject();
     pWarehouse->meshFileName = "assets/models/Warehouse_xyz_n_rgba.ply";
     pWarehouse->position.y = -20.0f;
+    pWarehouse->position.z = 300.0f;
+    pWarehouse->position.x = -500.0f;
     pWarehouse->orientation.y = 90.0f;
 
-//    ::g_pMeshesToDraw.push_back(pWarehouse);
+    ::g_pMeshesToDraw.push_back(pWarehouse);
 }
 
 void DrawMesh(cMeshObject* pCurrentMesh, GLint program)
