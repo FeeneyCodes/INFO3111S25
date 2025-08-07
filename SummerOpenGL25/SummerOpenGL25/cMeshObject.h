@@ -27,5 +27,7 @@ class cMeshObject
 	bool bIsWireframe;
 	bool bIsVisible;
 
+	float calculateDistanceFromCamera(glm::vec3 cameraEye);
+
 	//std::vector<cMeshObject*> vec_pChildObjects; // for later use potentially
 };

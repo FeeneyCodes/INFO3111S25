@@ -53,15 +53,16 @@ void main()
 	
 	
 	
-	pixelColour = vec4(vertColor);
+	vec4 vertexColour = vec4(vertColor);
 	
-	pixelColour.r = vertTextCoords.u;
-	pixelColour.g = vertTextCoords.v;
-	pixelColour.b = 0.0f;
+	vertexColour.r = vertTextCoords.x;		// S or U  (x)
+	vertexColour.g = vertTextCoords.y;		// T or V  (y)
+	vertexColour.b = 0.0f;
 	
-	vec4 lightContrib = calculateLightContrib(vertColor.rgb, vertNormal.xyz, vertWorldPosition.xyz, vertSpecular);
+//	vec4 lightContrib = calculateLightContrib(vertexColour.rgb, vertNormal.xyz, vertWorldPosition.xyz, vertSpecular);	
+//	pixelColour.rgb = lightContrib.rgb;
 	
-	pixelColour.rgb = lightContrib.rgb;
+	pixelColour.rgb = vertexColour.rgb;
 	
 	
 //	pixelColour.a = 1.0f;

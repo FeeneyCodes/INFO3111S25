@@ -25,6 +25,8 @@
 #include "cMeshObject.h"
 #include "cLightHelper/cLightHelper.h"
 #include "globalStuff.h"
+// Texture loading stuff
+#include "cBasicTextureManager/cBasicTextureManager.h"
 
 bool g_ShowLightDebugSpheres = false;
 
@@ -48,6 +50,8 @@ double g_getRandBetween(float min, float max)
 cShaderManager* g_pTheShaderManager = NULL;
 cVAOManager* g_pMeshManager = NULL;
 cLightManager* g_pLights = NULL;
+// Textures
+cBasicTextureManager* g_pTheTextures = NULL;
 
 cMeshObject* g_pSmoothSphere = NULL;
 
@@ -185,6 +189,18 @@ int main(void)
     mvp_location = glGetUniformLocation(program, "MVP");
 
     LoadFilesIntoVAOManager(program);
+
+    // Load the textures
+    ::g_pTheTextures = new cBasicTextureManager();
+    ::g_pTheTextures->SetBasePath("assets/textures");
+
+    // 
+    if (::g_pTheTextures->Create2DTextureFromBMPFile("Sydney_Sweeney.bmp", true))
+    {
+        std::cout << "Loaded Sydney_Sweeney.bmp OK";
+    };
+
+    GLuint SydSwee_TID = ::g_pTheTextures->getTextureIDFromName("Sydney_Sweeney.bmp");
 
     LoadModelsIntoScene();
 
@@ -567,8 +583,8 @@ void LoadFilesIntoVAOManager(GLuint program)
     // They are 500 units wide.
     float newFloorScale = 10.0f/ 500.0f;
 
-    if (!::g_pMeshManager->LoadModelIntoVAO("assets/models/Dungeon_models/Floors/SM_Env_Dwarf_Floor_03_xyz_n.ply",
-        meshFloor03, program, true, false, false, newFloorScale))
+    if (!::g_pMeshManager->LoadModelIntoVAO("assets/models/Dungeon_models/Floors/SM_Env_Dwarf_Floor_03.ply",
+        meshFloor03, program, true, true, true, newFloorScale))
     {
         std::cout << "Floor didn't load not loaded into VAO!" << std::endl;
     }
@@ -576,8 +592,9 @@ void LoadFilesIntoVAOManager(GLuint program)
 
     sModelDrawInfo meshInfoCow;
 
-    if (!::g_pMeshManager->LoadModelIntoVAO("assets/models/cow_xyz_n_rgba.ply",
-        meshInfoCow, program, true, true, false, 1.0f))
+//    if (!::g_pMeshManager->LoadModelIntoVAO("assets/models/cow_xyz_n_rgba.ply",
+    if (!::g_pMeshManager->LoadModelIntoVAO("assets/models/cow_xyz_n_rgba_UV.ply",
+        meshInfoCow, program, true, true, true, 1.0f))
     {
         std::cout << "Cow not loaded into VAO!" << std::endl;
     }
@@ -585,7 +602,8 @@ void LoadFilesIntoVAOManager(GLuint program)
 
     sModelDrawInfo dolphinMeshInfo;
 
-    if (!::g_pMeshManager->LoadModelIntoVAO("assets/models/dolphin_xyz_n_rgba.ply",
+//    if (!::g_pMeshManager->LoadModelIntoVAO("assets/models/dolphin_xyz_n_rgba.ply",
+    if (!::g_pMeshManager->LoadModelIntoVAO("assets/models/dolphin_xyz_n_rgba_UV.ply",
         dolphinMeshInfo, program, true, true, false, 1.0f))
     {
         std::cout << "Dolphin NOT loaded into VAO!" << std::endl;
@@ -593,27 +611,29 @@ void LoadFilesIntoVAOManager(GLuint program)
 
     sModelDrawInfo WarehouseMeshInfo;
 
-    if (!::g_pMeshManager->LoadModelIntoVAO("assets/models/Warehouse_xyz_n_rgba.ply",
-        WarehouseMeshInfo, program, true, true, false, 1.0f))
+//    if (!::g_pMeshManager->LoadModelIntoVAO("assets/models/Warehouse_xyz_n_rgba.ply",
+    if (!::g_pMeshManager->LoadModelIntoVAO("assets/models/Warehouse_xyz_n_rgba_UV.ply",
+        WarehouseMeshInfo, program, true, true, true, 1.0f))
     {
         std::cout << "Warehouse NOT loaded into VAO!" << std::endl;
     }
 
     sModelDrawInfo SmoothSphereMeshInfo;
 
-    if (!::g_pMeshManager->LoadModelIntoVAO("assets/models/Isoshphere_smooth_inverted_normals_xyz_n_rgba.ply",
-        SmoothSphereMeshInfo, program, true, true, false, 1.0f))
+//    if (!::g_pMeshManager->LoadModelIntoVAO("assets/models/Isoshphere_smooth_inverted_normals_xyz_n_rgba.ply",
+    if (!::g_pMeshManager->LoadModelIntoVAO("assets/models/Isoshphere_smooth_inverted_normals_xyz_n_rgba_uv.ply",
+        SmoothSphereMeshInfo, program, true, true, true, 1.0f))
     {
         std::cout << "SmoothSphere NOT loaded into VAO!" << std::endl;
     }
 
-    sModelDrawInfo bottleMesh;
+    //sModelDrawInfo bottleMesh;
 
-    if (!::g_pMeshManager->LoadModelIntoVAO("assets/models/Dungeon_models/Props and Decorations/SM_Item_Bottle_01__.ply",
-        bottleMesh, program, true, true, false, 1.0f))
-    {
-        std::cout << "SmoothSphere NOT loaded into VAO!" << std::endl;
-    }
+    //if (!::g_pMeshManager->LoadModelIntoVAO("assets/models/Dungeon_models/Props and Decorations/SM_Item_Bottle_01__.ply",
+    //    bottleMesh, program, true, true, false, 1.0f))
+    //{
+    //    std::cout << "SmoothSphere NOT loaded into VAO!" << std::endl;
+    //}
 
     return;
 }
@@ -625,7 +645,7 @@ void LoadModelsIntoScene()
     pFloor->colourRGB = glm::vec3(0.7f, 0.7f, 0.7f);
     //pFloor->position.x = -10.f;
     //pFloor->orientation.z = 90.0f;
-    pFloor->meshFileName = "assets/models/Dungeon_models/Floors/SM_Env_Dwarf_Floor_03_xyz_n.ply";
+    pFloor->meshFileName = "assets/models/Dungeon_models/Floors/SM_Env_Dwarf_Floor_03.ply";
     ::g_pMeshesToDraw.push_back(pFloor);
 
 
@@ -677,7 +697,7 @@ void LoadModelsIntoScene()
             pFloor->specularHihglightRGB = glm::vec3(1.0f, 1.0f, 1.0f);
             pFloor->specularPower = 1000.0f;
 
-            pFloor->meshFileName = "assets/models/Dungeon_models/Floors/SM_Env_Dwarf_Floor_03_xyz_n.ply";
+            pFloor->meshFileName = "assets/models/Dungeon_models/Floors/SM_Env_Dwarf_Floor_03.ply";
             ::g_pMeshesToDraw.push_back(pFloor);
         }
     }
@@ -698,16 +718,16 @@ void LoadModelsIntoScene()
         pCow->position.z = z;
         // Transparent cows
         pCow->transparencyAlpha = 0.6f;
-        pCow->meshFileName = "assets/models/cow_xyz_n_rgba.ply";
+        pCow->meshFileName = "assets/models/cow_xyz_n_rgba_UV.ply";
         ::g_pMeshesToDraw.push_back(pCow);
     }
 
 
-    cMeshObject* pBottle = new cMeshObject();
-    pBottle->bOverrideVertexModelColour = true;
-    pBottle->colourRGB = glm::vec3(1.0f, 1.0f, 1.0f);
-    pBottle->meshFileName = "assets/models/Dungeon_models/Props and Decorations/SM_Item_Bottle_01__.ply";
-    ::g_pMeshesToDraw.push_back(pBottle);
+    //cMeshObject* pBottle = new cMeshObject();
+    //pBottle->bOverrideVertexModelColour = true;
+    //pBottle->colourRGB = glm::vec3(1.0f, 1.0f, 1.0f);
+    //pBottle->meshFileName = "assets/models/Dungeon_models/Props and Decorations/SM_Item_Bottle_01__.ply";
+    //::g_pMeshesToDraw.push_back(pBottle);
 
 
 
@@ -718,7 +738,7 @@ void LoadModelsIntoScene()
     pCow->position.x = -10.f;
     pCow->orientation.z = 90.0f;
     pCow->uniqueName = "Betsy";
-    pCow->meshFileName = "assets/models/cow_xyz_n_rgba.ply";
+    pCow->meshFileName = "assets/models/cow_xyz_n_rgba_UV.ply";
 
     cMeshObject* pCow2 = new cMeshObject();
     pCow2->bIsWireframe = false;
@@ -726,13 +746,13 @@ void LoadModelsIntoScene()
     //pCow2->colourRGB = glm::vec3(1.0f, 0.0f, 0.0f);
     pCow2->position.x = 10.f;
     pCow2->scale = 0.5f;
-    pCow2->meshFileName = "assets/models/cow_xyz_n_rgba.ply";
+    pCow2->meshFileName = "assets/models/cow_xyz_n_rgba_UV.ply";
 
     ::g_pMeshesToDraw.push_back(pCow);
     ::g_pMeshesToDraw.push_back(pCow2);
 
     cMeshObject* pDolphin = new cMeshObject();
-    pDolphin->meshFileName = "assets/models/dolphin_xyz_n_rgba.ply";
+    pDolphin->meshFileName = "assets/models/dolphin_xyz_n_rgba_UV.ply";
     pDolphin->scale = 0.02f;
     pDolphin->position.y = 10.0f;
     pDolphin->orientation.z = 45.0f;
@@ -740,7 +760,7 @@ void LoadModelsIntoScene()
     ::g_pMeshesToDraw.push_back(pDolphin);
 
     cMeshObject* pDolphin2 = new cMeshObject();
-    pDolphin2->meshFileName = "assets/models/dolphin_xyz_n_rgba.ply";
+    pDolphin2->meshFileName = "assets/models/dolphin_xyz_n_rgba_UV.ply";
     pDolphin2->scale = 0.02f;
     pDolphin2->position.y = -10.0f;
     pDolphin2->orientation.z = -45.0f;
@@ -748,10 +768,10 @@ void LoadModelsIntoScene()
     ::g_pMeshesToDraw.push_back(pDolphin2);
 
     cMeshObject* pWarehouse = new cMeshObject();
-    pWarehouse->meshFileName = "assets/models/Warehouse_xyz_n_rgba.ply";
+    pWarehouse->meshFileName = "assets/models/Warehouse_xyz_n_rgba_UV.ply";
     pWarehouse->position.y = -20.0f;
-    pWarehouse->position.z = 300.0f;
-    pWarehouse->position.x = -500.0f;
+    pWarehouse->position.z = 100.0f;
+    pWarehouse->position.x = -15.0f;
     pWarehouse->orientation.y = 90.0f;
 
     ::g_pMeshesToDraw.push_back(pWarehouse);
