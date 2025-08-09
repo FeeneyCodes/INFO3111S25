@@ -67,14 +67,33 @@ public:
 		bool hasTextureCoords,				// TODO:
 		float scaling);			// Keep at 1.0 for no change
 
-	void GenTextureCoordsSpherical(sModelDrawInfo& meshInfo,
-		enumTEXCOORDBIAS uBias, enumTEXCOORDBIAS vBias,
-		bool basedOnNormals, float scale, bool fast);
+	// This assumes normals, colours, textures, and sclaing of 1.0f
+	bool LoadModelIntoVAO_2(std::string fileName, unsigned int shaderProgramID);
+
+	std::string getListOfLoadedModels(void);
 
 	// We don't want to return an int, likely
 	bool FindDrawInfoByModelName(std::string filename,
 								 sModelDrawInfo &drawInfo);
 
+
+
+	// This JUST loads the model from file into the sModelDrawInfo struct,
+	//	but does NOT load it into the VAO
+	bool LoadTheModel_IntoDrawInfoObject(std::string fileName,
+		sModelDrawInfo& drawInfo,
+		bool hasNormals,
+		bool hasColours,
+		bool hasTextureCoords,
+		float scaling);
+
+	// Takes a LOADED sModelDrawInfo stuct and copies it into the VAO
+	bool LoadModelDrawInfo_IntoVAO(sModelDrawInfo& drawInfo,
+		unsigned int shaderProgramID);
+
+	void GenTextureCoordsSpherical(sModelDrawInfo& meshInfo,
+		enumTEXCOORDBIAS uBias, enumTEXCOORDBIAS vBias,
+		bool basedOnNormals, float scale, bool fast);
 
 	std::string getLastError(bool bAndClear = true);
 

@@ -78,6 +78,9 @@
     <ClCompile Include="cBasicTextureManager\CTextureFromBMP.cpp">
       <Filter>TextureStuff</Filter>
     </ClCompile>
+    <ClCompile Include="LoadModelsAndTextures.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cShaderManager\cShaderManager.h">

@@ -62,10 +62,15 @@ unsigned int g_SizeOfVertexArrayInBytes = 0;
 // Now getting this from the fly camera
 //glm::vec3 g_cameraEye = glm::vec3(0.0, 0.0, -30.0f);
 
-void LoadFilesIntoVAOManager(GLuint program);
+
+// Moved to LoadModelsAndTextures
+void LoadFilesIntoVAOManager(cVAOManager* pTheMeshManager, GLuint program);
+void LoadModelsIntoScene();
+void LoadTexturesIntoTextureManager(cBasicTextureManager* pTheTextureManager);
+
 
 std::vector<cMeshObject*> g_pMeshesToDraw;
-void LoadModelsIntoScene();
+
 
 void DrawMesh(cMeshObject* pCurrentMesh, GLint program);
 
@@ -188,7 +193,9 @@ int main(void)
 
     mvp_location = glGetUniformLocation(program, "MVP");
 
-    LoadFilesIntoVAOManager(program);
+
+    ::g_pMeshManager = new cVAOManager();
+    LoadFilesIntoVAOManager(::g_pMeshManager, program);
 
 
     // *******************************************************
@@ -200,25 +207,8 @@ int main(void)
     //                                            
     // Load the textures
     ::g_pTheTextures = new cBasicTextureManager();
-    ::g_pTheTextures->SetBasePath("assets/textures");
 
-    // 
-    if (::g_pTheTextures->Create2DTextureFromBMPFile("Sydney_Sweeney.bmp", true))
-    {
-        std::cout << "Loaded Sydney_Sweeney.bmp OK";
-    };
-
-    ::g_pTheTextures->Create2DTextureFromBMPFile("Dungeons_2_Texture_01_A.bmp", true);
-    ::g_pTheTextures->Create2DTextureFromBMPFile("Grass_Texture_1.bmp", true);
-    ::g_pTheTextures->Create2DTextureFromBMPFile("Lava_Texture.bmp", true);
-    ::g_pTheTextures->Create2DTextureFromBMPFile("Stone_Texture_1.bmp", true);
-    ::g_pTheTextures->Create2DTextureFromBMPFile("Stone_Texture_2.bmp", true);
-
-//    if ( ::g_pTheTextures->CreateCubeTextureFromBMPFiles(
-//        "Space",
-
-
-    //GLuint SydSwee_TID = ::g_pTheTextures->getTextureIDFromName("Sydney_Sweeney.bmp");
+    LoadTexturesIntoTextureManager(::g_pTheTextures);
 
     // *******************************************************
 
@@ -605,262 +595,15 @@ int main(void)
     exit(EXIT_SUCCESS);
 }
 
-void LoadFilesIntoVAOManager(GLuint program)
-{
-    ::g_pMeshManager = new cVAOManager();
+// Moved to LoadModelsAndTextures
+// void LoadFilesIntoVAOManager(GLuint program)
 
-    // Load the dungeon floow model
-    sModelDrawInfo meshFloor03;
-
-    // Scale we want for the floor. 
-    // They are 500 units wide.
-    float newFloorScale = 10.0f/ 500.0f;
-
-    if (!::g_pMeshManager->LoadModelIntoVAO("assets/models/Dungeon_models/Floors/SM_Env_Dwarf_Floor_03.ply",
-        meshFloor03, program, true, true, true, newFloorScale))
-    {
-        std::cout << "Floor didn't load not loaded into VAO!" << std::endl;
-    }
-
-
-    sModelDrawInfo meshInfoCow;
-
-//    if (!::g_pMeshManager->LoadModelIntoVAO("assets/models/cow_xyz_n_rgba.ply",
-    if (!::g_pMeshManager->LoadModelIntoVAO("assets/models/cow_xyz_n_rgba_UV.ply",
-        meshInfoCow, program, true, true, true, 1.0f))
-    {
-        std::cout << "Cow not loaded into VAO!" << std::endl;
-    }
-
-
-    sModelDrawInfo dolphinMeshInfo;
-
-//    if (!::g_pMeshManager->LoadModelIntoVAO("assets/models/dolphin_xyz_n_rgba.ply",
-    if (!::g_pMeshManager->LoadModelIntoVAO("assets/models/dolphin_xyz_n_rgba_UV.ply",
-        dolphinMeshInfo, program, true, true, false, 1.0f))
-    {
-        std::cout << "Dolphin NOT loaded into VAO!" << std::endl;
-    }
-
-    sModelDrawInfo WarehouseMeshInfo;
-
-//    if (!::g_pMeshManager->LoadModelIntoVAO("assets/models/Warehouse_xyz_n_rgba.ply",
-    if (!::g_pMeshManager->LoadModelIntoVAO("assets/models/Warehouse_xyz_n_rgba_UV.ply",
-        WarehouseMeshInfo, program, true, true, true, 1.0f))
-    {
-        std::cout << "Warehouse NOT loaded into VAO!" << std::endl;
-    }
-
-    sModelDrawInfo SmoothSphereMeshInfo;
-
-//    if (!::g_pMeshManager->LoadModelIntoVAO("assets/models/Isoshphere_smooth_inverted_normals_xyz_n_rgba.ply",
-    if (!::g_pMeshManager->LoadModelIntoVAO("assets/models/Isoshphere_smooth_inverted_normals_xyz_n_rgba_uv.ply",
-        SmoothSphereMeshInfo, program, true, true, true, 1.0f))
-    {
-        std::cout << "SmoothSphere NOT loaded into VAO!" << std::endl;
-    }
-
-    //sModelDrawInfo bottleMesh;
-
-    //if (!::g_pMeshManager->LoadModelIntoVAO("assets/models/Dungeon_models/Props and Decorations/SM_Item_Bottle_01__.ply",
-    //    bottleMesh, program, true, true, false, 1.0f))
-    //{
-    //    std::cout << "SmoothSphere NOT loaded into VAO!" << std::endl;
-    //}
-
-    return;
-}
-
-void LoadModelsIntoScene()
-{
-
-    cMeshObject* pWarehouse = new cMeshObject();
-    pWarehouse->meshFileName = "assets/models/Warehouse_xyz_n_rgba_UV.ply";
-    pWarehouse->uniqueName = "The Warehouse";
-    pWarehouse->position.y = -20.0f;
-    pWarehouse->position.z = 100.0f;
-    pWarehouse->position.x = -15.0f;
-    pWarehouse->orientation.y = 90.0f;
-
-    pWarehouse->textureNames[0] = "Sydney_Sweeney.bmp";
-    pWarehouse->textureMixRatio[0] = 0.0f;
-
-    pWarehouse->textureNames[1] = "Dungeons_2_Texture_01_A.bmp";
-    pWarehouse->textureMixRatio[1] = 0.0f;
-
-    pWarehouse->textureNames[2] = "Stone_Texture_2.bmp";
-    pWarehouse->textureMixRatio[2] = 1.0f;
-
-    pWarehouse->textureMixRatio[3] = 0.0f;
-
-    ::g_pMeshesToDraw.push_back(pWarehouse);
-
-
-    cMeshObject* pFloor = new cMeshObject();
-    pFloor->bOverrideVertexModelColour = true;
-    pFloor->colourRGB = glm::vec3(0.7f, 0.7f, 0.7f);
-    //pFloor->position.x = -10.f;
-    //pFloor->orientation.z = 90.0f;
-    pFloor->meshFileName = "assets/models/Dungeon_models/Floors/SM_Env_Dwarf_Floor_03.ply";
-    pFloor->textureNames[0] = "Dungeons_2_Texture_01_A.bmp";
-    pFloor->textureMixRatio[0] = 0.5f;
-    ::g_pMeshesToDraw.push_back(pFloor);
-
-
-    // HACK: Load the dungeon map
-//    XXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-//    X...X.........X.......X.....X
-//    X.XXX.X.....XXX.X.XXX.X.XXX.X
-//    X...........X...X...X.X.X...X
-//    X...........X.XXXXX.X.XXX.X.X
-//    X.......X...X...X...X.X...X.X
-//    X.......X.XXXXX.X.XXX.X.X.XXX
-//    X.........X.....X.X.....X.X..
-//    X.XX....XXX.XXXXX.XXXXXXX.X.X
-//    ........X...X.X...X...X...X.X
-//    X.......X.XXX.X.XXX.X.XXXXX.X
-//    X.........X...X.....X.X.....X
-//    X.......XXX.X.XXXXXXX.X.XXXXX
-//    X...........X.......X.......X
-//    XXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-    std::vector<std::string> vecTheMap;
-    std::ifstream theDungeonMapFile("assets/DungeonMap.txt");
-    if (theDungeonMapFile.is_open())
-    {
-        // Openned the map
-        std::string theRow;
-        while (theDungeonMapFile >> theRow)
-        {
-            vecTheMap.push_back(theRow);
-        }
-    }
-
-    // Cell 3, 4
-    char theCell = vecTheMap[3][4];
-    
-    const float floorTileWidth = 10.0f;
-    const float floorOffset = -50.0f;
-
-    for (unsigned int row = 0; row != vecTheMap.size(); row++)
-    {
-        for (unsigned int col = 0; col != vecTheMap[0].length(); col++)
-        {
-            cMeshObject* pFloor = new cMeshObject();
-            pFloor->bOverrideVertexModelColour = true;
-            pFloor->colourRGB = glm::vec3(0.7f, 0.7f, 0.7f);
-            pFloor->position.x = row * floorTileWidth + floorOffset;
-            pFloor->position.z = col * floorTileWidth + floorOffset;
-            pFloor->position.y = -10.0f;
-
-            pFloor->specularHihglightRGB = glm::vec3(1.0f, 1.0f, 1.0f);
-            pFloor->specularPower = 1000.0f;
-
-            pFloor->meshFileName = "assets/models/Dungeon_models/Floors/SM_Env_Dwarf_Floor_03.ply";
-            
-            pFloor->textureNames[0] = "Dungeons_2_Texture_01_A.bmp";
-            pFloor->textureMixRatio[0] = 1.0f;
-
-            ::g_pMeshesToDraw.push_back(pFloor);
-        }
-    }
-
-    for (float z = -100.0f; z < 101.0f; z += 10.0f)
-    {
-        cMeshObject* pCow = new cMeshObject();
-        pCow->bOverrideVertexModelColour = true;
-        pCow->colourRGB =
-            glm::vec3(
-                ::g_getRandBetween(0.3f, 1.0f),
-                ::g_getRandBetween(0.3f, 1.0f),
-                ::g_getRandBetween(0.3f, 1.0f));
-        pCow->specularHihglightRGB = glm::vec3(1.0f, 1.0f, 1.0f);
-        pCow->specularPower = ::g_getRandBetween(1.0, 10'000.0f);
-        pCow->position.x = 0.f;
-        pCow->position.y = 0.0f;
-        pCow->position.z = z;
-        // Transparent cows
-        pCow->transparencyAlpha = 0.6f;
-        pCow->meshFileName = "assets/models/cow_xyz_n_rgba_UV.ply";
-
-        pCow->textureNames[0] = "Lava_Texture.bmp";
-        pCow->textureMixRatio[0] = 1.0f;
-
-        ::g_pMeshesToDraw.push_back(pCow);
-    }
-
-
-    //cMeshObject* pBottle = new cMeshObject();
-    //pBottle->bOverrideVertexModelColour = true;
-    //pBottle->colourRGB = glm::vec3(1.0f, 1.0f, 1.0f);
-    //pBottle->meshFileName = "assets/models/Dungeon_models/Props and Decorations/SM_Item_Bottle_01__.ply";
-    //::g_pMeshesToDraw.push_back(pBottle);
+// Moved to LoadModelsAndTextures
+// void LoadModelsIntoScene()
 
 
 
-
-    cMeshObject* pCow = new cMeshObject();
-    pCow->bOverrideVertexModelColour = true;
-    pCow->colourRGB = glm::vec3(0.0f, 1.0f, 0.0f);
-    pCow->position.x = -10.f;
-    pCow->orientation.z = 90.0f;
-    pCow->uniqueName = "Betsy";
-    pCow->meshFileName = "assets/models/cow_xyz_n_rgba_UV.ply";
-    pCow->textureNames[0] = "Stone_Texture_1.bmp";
-    pCow->textureMixRatio[0] = 1.0f;
-
-    cMeshObject* pCow2 = new cMeshObject();
-    pCow2->bIsWireframe = false;
-    //pCow2->bOverrideVertexModelColour = true;
-    //pCow2->colourRGB = glm::vec3(1.0f, 0.0f, 0.0f);
-    pCow2->position.x = 10.f;
-    pCow2->scale = 0.5f;
-    pCow2->meshFileName = "assets/models/cow_xyz_n_rgba_UV.ply";
-    pCow2->textureNames[0] = "Stone_Texture_2.bmp";
-    pCow2->textureMixRatio[0] = 1.0f;
-
-    ::g_pMeshesToDraw.push_back(pCow);
-    ::g_pMeshesToDraw.push_back(pCow2);
-
-    cMeshObject* pCow3 = new cMeshObject();
-    pCow3->bIsWireframe = false;
-    pCow3->position.x = 20.f;
-    pCow3->position.y = 10.f;
-    pCow3->scale = 0.5f;
-    pCow3->meshFileName = "assets/models/cow_xyz_n_rgba_UV.ply";
-
-    pCow3->textureNames[3] = "Grass_Texture_1.bmp";
-    pCow3->textureMixRatio[0] = 0.0f;
-    pCow3->textureMixRatio[1] = 0.0f;
-    pCow3->textureMixRatio[2] = 0.0f;
-    pCow3->textureMixRatio[3] = 1.0f;   // <-- Grass is #3
-
-    ::g_pMeshesToDraw.push_back(pCow3);
-
-    cMeshObject* pDolphin = new cMeshObject();
-    pDolphin->meshFileName = "assets/models/dolphin_xyz_n_rgba_UV.ply";
-    pDolphin->scale = 0.02f;
-    pDolphin->position.y = 10.0f;
-    pDolphin->orientation.z = 45.0f;
-    pDolphin->textureNames[0] = "Sydney_Sweeney.bmp";
-    pDolphin->textureMixRatio[0] = 1.0f;
-
-    ::g_pMeshesToDraw.push_back(pDolphin);
-
-    cMeshObject* pDolphin2 = new cMeshObject();
-    pDolphin2->meshFileName = "assets/models/dolphin_xyz_n_rgba_UV.ply";
-    pDolphin2->scale = 0.02f;
-    pDolphin2->position.y = -10.0f;
-    pDolphin2->orientation.z = -45.0f;
-    pDolphin2->textureNames[0] = "Dungeons_2_Texture_01_A.bmp";
-    pDolphin2->textureMixRatio[0] = 1.0f;
-
-    ::g_pMeshesToDraw.push_back(pDolphin2);
-
-
-}
-
-
-void SetUpTextures(cMeshObject* pCurrentMesh, GLint program)
+void SetUpTexturesForObjetDraw(cMeshObject* pCurrentMesh, GLint program)
 {
 //    GLuint Syd_TexID = ::g_pTheTextures->getTextureIDFromName("Sydney_Sweeney.bmp");
 //    GLuint Syd_TexID = ::g_pTheTextures->getTextureIDFromName("Texture_01_A.bmp");
@@ -1036,9 +779,7 @@ void DrawMesh(cMeshObject* pCurrentMesh, GLint program)
 
 
 
-    SetUpTextures(pCurrentMesh, program);
-
-
+    SetUpTexturesForObjetDraw(pCurrentMesh, program);
 
 
 
@@ -1053,4 +794,13 @@ void DrawMesh(cMeshObject* pCurrentMesh, GLint program)
             GL_UNSIGNED_INT, (void*)0);
         glBindVertexArray(0);
     }
+
+
+//    // Any child meshes?
+//    for (cMeshObject* pChildMesh : pCurrentMesh->vec_pChildObjects)
+//    {
+//        DrawMesh(pChildMesh);
+//    }
+
+    return;
 }

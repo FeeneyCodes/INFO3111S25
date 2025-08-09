@@ -157,6 +157,7 @@
     <ClCompile Include="glad.c" />
     <ClCompile Include="glfw_keyboard_callback_function.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="LoadModelsAndTextures.cpp" />
     <ClCompile Include="mouse_keyboard_async.cpp" />
     <ClCompile Include="old-loading.cpp" />
   </ItemGroup>

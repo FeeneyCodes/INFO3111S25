@@ -72,14 +72,25 @@ void main()
 						+ tex01RGBA * texMixRatios.y
 						+ tex02RGBA * texMixRatios.z
 						+ tex03RGBA * texMixRatios.w;
-						
+					
+
 	
 	
 //	vec4 lightContrib = calculateLightContrib(vertexColour.rgb, vertNormal.xyz, vertWorldPosition.xyz, vertSpecular);	
-//	pixelColour.rgb = lightContrib.rgb;
+
+	// Replace the "vertex colour" with the colour form the textures
+	vec4 lightContrib = calculateLightContrib(finalTextRGBA.rgb, vertNormal.xyz, vertWorldPosition.xyz, vertSpecular);	
+	pixelColour.rgb = lightContrib.rgb;
 	
-	pixelColour.rgb = finalTextRGBA.rgb;
+	// Add some ambient if it's too dark
+	// You can think of "ambient" light as how bright something
+	//	is if it DOESN'T have any light DIRECTLY shining on it.
+	pixelColour.rgb += vec3(0.1f, 0.1f, 0.1f);
 	
+// Here's where we output the colour WITHOUT the lighting					
+//	pixelColour.rgb = finalTextRGBA.rgb;
+
+
 	
 //	pixelColour.a = 1.0f;
 	// Alpha or transparency value.
