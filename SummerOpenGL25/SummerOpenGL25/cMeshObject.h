@@ -9,11 +9,11 @@
 // should usually be a noun (and just one thing)
 class cMeshObject
 {
-	public:
+public:
 	cMeshObject();
 	std::string meshFileName;
 	std::string uniqueName;
-	glm::vec3 position;   
+	glm::vec3 position;
 	glm::vec3 orientation; // eurler axis
 	//glm::vec3 scaleXYZ; 
 	float scale; // uniform scale
@@ -26,6 +26,11 @@ class cMeshObject
 	bool bOverrideVertexModelColour;
 	bool bIsWireframe;
 	bool bIsVisible;
+
+	static const unsigned int NUM_TEXTURES = 4;
+	std::string textureNames[NUM_TEXTURES];
+	float textureMixRatio[NUM_TEXTURES];
+
 
 	float calculateDistanceFromCamera(glm::vec3 cameraEye);
 

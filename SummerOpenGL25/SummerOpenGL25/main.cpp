@@ -190,6 +190,14 @@ int main(void)
 
     LoadFilesIntoVAOManager(program);
 
+
+    // *******************************************************
+    //    _____         _                         
+    //   |_   _|____  _| |_ _   _ _ __ ___  ___ _ 
+    //     | |/ _ \ \/ / __| | | | '__/ _ \/ __(_)
+    //     | |  __/>  <| |_| |_| | | |  __/\__ \_ 
+    //     |_|\___/_/\_\\__|\__,_|_|  \___||___(_)
+    //                                            
     // Load the textures
     ::g_pTheTextures = new cBasicTextureManager();
     ::g_pTheTextures->SetBasePath("assets/textures");
@@ -200,7 +208,21 @@ int main(void)
         std::cout << "Loaded Sydney_Sweeney.bmp OK";
     };
 
-    GLuint SydSwee_TID = ::g_pTheTextures->getTextureIDFromName("Sydney_Sweeney.bmp");
+    ::g_pTheTextures->Create2DTextureFromBMPFile("Dungeons_2_Texture_01_A.bmp", true);
+    ::g_pTheTextures->Create2DTextureFromBMPFile("Grass_Texture_1.bmp", true);
+    ::g_pTheTextures->Create2DTextureFromBMPFile("Lava_Texture.bmp", true);
+    ::g_pTheTextures->Create2DTextureFromBMPFile("Stone_Texture_1.bmp", true);
+    ::g_pTheTextures->Create2DTextureFromBMPFile("Stone_Texture_2.bmp", true);
+
+//    if ( ::g_pTheTextures->CreateCubeTextureFromBMPFiles(
+//        "Space",
+
+
+    //GLuint SydSwee_TID = ::g_pTheTextures->getTextureIDFromName("Sydney_Sweeney.bmp");
+
+    // *******************************************************
+
+
 
     LoadModelsIntoScene();
 
@@ -503,6 +525,17 @@ int main(void)
             ::g_pLights->theLights[2].direction = glm::vec4(pointTowardCow, 1.0f);
         }
 
+//        // Change texture ratio on the warehouse
+//        cMeshObject* pWarehouse = g_pFindObjectByUniqueName("The Warehouse");
+//        if (pWarehouse)
+//        {
+//            double currentTime = glfwGetTime();
+//            float ratio = fabs(glm::sin(currentTime));
+//
+//            pWarehouse->textureMixRatio[0] = ratio;
+//            pWarehouse->textureMixRatio[2] = 1.0f - ratio;
+//        }
+
 
 
         // Place stuff on the window title
@@ -640,12 +673,37 @@ void LoadFilesIntoVAOManager(GLuint program)
 
 void LoadModelsIntoScene()
 {
+
+    cMeshObject* pWarehouse = new cMeshObject();
+    pWarehouse->meshFileName = "assets/models/Warehouse_xyz_n_rgba_UV.ply";
+    pWarehouse->uniqueName = "The Warehouse";
+    pWarehouse->position.y = -20.0f;
+    pWarehouse->position.z = 100.0f;
+    pWarehouse->position.x = -15.0f;
+    pWarehouse->orientation.y = 90.0f;
+
+    pWarehouse->textureNames[0] = "Sydney_Sweeney.bmp";
+    pWarehouse->textureMixRatio[0] = 0.0f;
+
+    pWarehouse->textureNames[1] = "Dungeons_2_Texture_01_A.bmp";
+    pWarehouse->textureMixRatio[1] = 0.0f;
+
+    pWarehouse->textureNames[2] = "Stone_Texture_2.bmp";
+    pWarehouse->textureMixRatio[2] = 1.0f;
+
+    pWarehouse->textureMixRatio[3] = 0.0f;
+
+    ::g_pMeshesToDraw.push_back(pWarehouse);
+
+
     cMeshObject* pFloor = new cMeshObject();
     pFloor->bOverrideVertexModelColour = true;
     pFloor->colourRGB = glm::vec3(0.7f, 0.7f, 0.7f);
     //pFloor->position.x = -10.f;
     //pFloor->orientation.z = 90.0f;
     pFloor->meshFileName = "assets/models/Dungeon_models/Floors/SM_Env_Dwarf_Floor_03.ply";
+    pFloor->textureNames[0] = "Dungeons_2_Texture_01_A.bmp";
+    pFloor->textureMixRatio[0] = 0.5f;
     ::g_pMeshesToDraw.push_back(pFloor);
 
 
@@ -698,6 +756,10 @@ void LoadModelsIntoScene()
             pFloor->specularPower = 1000.0f;
 
             pFloor->meshFileName = "assets/models/Dungeon_models/Floors/SM_Env_Dwarf_Floor_03.ply";
+            
+            pFloor->textureNames[0] = "Dungeons_2_Texture_01_A.bmp";
+            pFloor->textureMixRatio[0] = 1.0f;
+
             ::g_pMeshesToDraw.push_back(pFloor);
         }
     }
@@ -719,6 +781,10 @@ void LoadModelsIntoScene()
         // Transparent cows
         pCow->transparencyAlpha = 0.6f;
         pCow->meshFileName = "assets/models/cow_xyz_n_rgba_UV.ply";
+
+        pCow->textureNames[0] = "Lava_Texture.bmp";
+        pCow->textureMixRatio[0] = 1.0f;
+
         ::g_pMeshesToDraw.push_back(pCow);
     }
 
@@ -739,6 +805,8 @@ void LoadModelsIntoScene()
     pCow->orientation.z = 90.0f;
     pCow->uniqueName = "Betsy";
     pCow->meshFileName = "assets/models/cow_xyz_n_rgba_UV.ply";
+    pCow->textureNames[0] = "Stone_Texture_1.bmp";
+    pCow->textureMixRatio[0] = 1.0f;
 
     cMeshObject* pCow2 = new cMeshObject();
     pCow2->bIsWireframe = false;
@@ -747,15 +815,34 @@ void LoadModelsIntoScene()
     pCow2->position.x = 10.f;
     pCow2->scale = 0.5f;
     pCow2->meshFileName = "assets/models/cow_xyz_n_rgba_UV.ply";
+    pCow2->textureNames[0] = "Stone_Texture_2.bmp";
+    pCow2->textureMixRatio[0] = 1.0f;
 
     ::g_pMeshesToDraw.push_back(pCow);
     ::g_pMeshesToDraw.push_back(pCow2);
+
+    cMeshObject* pCow3 = new cMeshObject();
+    pCow3->bIsWireframe = false;
+    pCow3->position.x = 20.f;
+    pCow3->position.y = 10.f;
+    pCow3->scale = 0.5f;
+    pCow3->meshFileName = "assets/models/cow_xyz_n_rgba_UV.ply";
+
+    pCow3->textureNames[3] = "Grass_Texture_1.bmp";
+    pCow3->textureMixRatio[0] = 0.0f;
+    pCow3->textureMixRatio[1] = 0.0f;
+    pCow3->textureMixRatio[2] = 0.0f;
+    pCow3->textureMixRatio[3] = 1.0f;   // <-- Grass is #3
+
+    ::g_pMeshesToDraw.push_back(pCow3);
 
     cMeshObject* pDolphin = new cMeshObject();
     pDolphin->meshFileName = "assets/models/dolphin_xyz_n_rgba_UV.ply";
     pDolphin->scale = 0.02f;
     pDolphin->position.y = 10.0f;
     pDolphin->orientation.z = 45.0f;
+    pDolphin->textureNames[0] = "Sydney_Sweeney.bmp";
+    pDolphin->textureMixRatio[0] = 1.0f;
 
     ::g_pMeshesToDraw.push_back(pDolphin);
 
@@ -764,18 +851,91 @@ void LoadModelsIntoScene()
     pDolphin2->scale = 0.02f;
     pDolphin2->position.y = -10.0f;
     pDolphin2->orientation.z = -45.0f;
+    pDolphin2->textureNames[0] = "Dungeons_2_Texture_01_A.bmp";
+    pDolphin2->textureMixRatio[0] = 1.0f;
 
     ::g_pMeshesToDraw.push_back(pDolphin2);
 
-    cMeshObject* pWarehouse = new cMeshObject();
-    pWarehouse->meshFileName = "assets/models/Warehouse_xyz_n_rgba_UV.ply";
-    pWarehouse->position.y = -20.0f;
-    pWarehouse->position.z = 100.0f;
-    pWarehouse->position.x = -15.0f;
-    pWarehouse->orientation.y = 90.0f;
 
-    ::g_pMeshesToDraw.push_back(pWarehouse);
 }
+
+
+void SetUpTextures(cMeshObject* pCurrentMesh, GLint program)
+{
+//    GLuint Syd_TexID = ::g_pTheTextures->getTextureIDFromName("Sydney_Sweeney.bmp");
+//    GLuint Syd_TexID = ::g_pTheTextures->getTextureIDFromName("Texture_01_A.bmp");
+
+    {   // Texture sampler00:
+        GLuint textureID00 = ::g_pTheTextures->getTextureIDFromName(pCurrentMesh->textureNames[0]);
+        // Bind this texture to the sampler
+        // Choose a texture unit... 
+        // Unit: #0
+        glActiveTexture(GL_TEXTURE0);	// GL_TEXTURE0 = 33984
+        // Bind texture to tell texture unit what it's bound to
+        glBindTexture(GL_TEXTURE_2D, textureID00);    // <-- 0 is the texture unit
+        // At this point, texture "textID00" is bound to texture unit #0
+
+        // Get the sampler (shader) uniform location
+        // uniform sampler2D textSampler2D_00;	
+        GLint textSampler2D_00_UL = glGetUniformLocation(program, "textSampler2D_00");
+        glUniform1i(textSampler2D_00_UL, 0);   // (Uniform ID, Texture Unit #)
+    }
+
+    {   // Texture sampler01:
+        GLuint textID01 = ::g_pTheTextures->getTextureIDFromName(pCurrentMesh->textureNames[1]);
+        // Bind this texture to the sampler
+        // Choose a texture unit... 
+        // Unit: #1
+        glActiveTexture(GL_TEXTURE1);	// GL_TEXTURE0 = 33984
+        // Bind texture to tell texture unit what it's bound to
+        glBindTexture(GL_TEXTURE_2D, textID01);    // Note: NOT GL_TEXTURE1
+
+        // Get the sampler (shader) uniform location
+        // uniform sampler2D textSampler2D_01;	
+        GLint textSampler2D_01_UL = glGetUniformLocation(program, "textSampler2D_01");
+        glUniform1i(textSampler2D_01_UL, 1);
+    }
+    {   // Texture sampler 2:
+        
+        // Texture bound to texture unit:
+        GLuint textID02 = ::g_pTheTextures->getTextureIDFromName(pCurrentMesh->textureNames[2]);
+        glActiveTexture(GL_TEXTURE2);	
+        glBindTexture(GL_TEXTURE_2D, textID02);   
+
+        // Sampler tied to texture unit
+        // uniform sampler2D textSampler2D_02;
+        GLint textSampler2D_02_UL = glGetUniformLocation(program, "textSampler2D_02");
+        glUniform1i(textSampler2D_02_UL, 2);
+    }
+
+    {   // Texture sampler 3:
+
+        // Texture bound to texture unit:
+        GLuint textID03 = ::g_pTheTextures->getTextureIDFromName(pCurrentMesh->textureNames[3]);
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, textID03);
+
+        // Sampler tied to texture unit
+        // uniform sampler2D textSampler2D_03;
+        GLint textSampler2D_03_UL = glGetUniformLocation(program, "textSampler2D_03");
+        glUniform1i(textSampler2D_03_UL, 3);
+    }
+
+
+    
+    // Also the  mix ratios
+    // uniform vec4 texMixRatios;	
+    GLint texMixRatios_UL = glGetUniformLocation(program, "texMixRatios");
+    glUniform4f(texMixRatios_UL,
+        pCurrentMesh->textureMixRatio[0],
+        pCurrentMesh->textureMixRatio[1],
+        pCurrentMesh->textureMixRatio[2],
+        pCurrentMesh->textureMixRatio[3]);
+
+    return;
+}
+
+
 
 void DrawMesh(cMeshObject* pCurrentMesh, GLint program)
 {
@@ -873,6 +1033,14 @@ void DrawMesh(cMeshObject* pCurrentMesh, GLint program)
     // gets rid of any translation (movement) and scaling. leaves only roation
     glm::mat4 matModelIt = glm::inverse(glm::transpose(matModel));
     glUniformMatrix4fv(mModelIt_location, 1, GL_FALSE, glm::value_ptr(matModelIt));
+
+
+
+    SetUpTextures(pCurrentMesh, program);
+
+
+
+
 
     //glDrawArrays(GL_TRIANGLES, 0, g_NumVerticiesToDraw);
     sModelDrawInfo modelToDraw;

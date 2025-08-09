@@ -263,7 +263,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
                 return;
             }
 
-            for (auto ptr : ::g_pMeshesToDraw) {
+            for (cMeshObject* ptr : ::g_pMeshesToDraw) {
                 delete ptr;
             }
             ::g_pMeshesToDraw.clear();

@@ -38,31 +38,47 @@ const int DIRECTIONAL_LIGHT_TYPE = 2;
 const int NUMBEROFLIGHTS = 10;
 uniform sLight theLights[NUMBEROFLIGHTS];
 
+// Textures (can have up to 32+ of these)
+// BUT keep in mind that's NOT the "total number of textures"
+//    it's the max texture PER PIXEL
+uniform sampler2D textSampler2D_00;		// Sydney
+uniform sampler2D textSampler2D_01;		// Dungeon
+uniform sampler2D textSampler2D_02;
+uniform sampler2D textSampler2D_03;
+
+// From cMeshObject: float textureMixRatio[NUM_TEXTURES];
+// 0.0 = no texture to 1.0 = 100% of that texture
+// All the ratios should add up to 1.0f
+uniform vec4 texMixRatios;		// x = 0, y = 1, etc. 
+
 
 void main()
 {
-    //gl_FragColor = vec4(vertColor, 1.0);
-	
-//	vec4 vertSpecular = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	
-	// If the Y is between 5 and 10, then don't draw it
-//	if ( vertWorldPosition.y >= 3.0f && vertWorldPosition.y <=5.0f )
-//	{
-//		discard;
-//	}
-	
-	
 	
 	vec4 vertexColour = vec4(vertColor);
 	
-	vertexColour.r = vertTextCoords.x;		// S or U  (x)
-	vertexColour.g = vertTextCoords.y;		// T or V  (y)
-	vertexColour.b = 0.0f;
+//	vertexColour.r = vertTextCoords.x;		// S or U  (x)
+//	vertexColour.g = vertTextCoords.y;		// T or V  (y)
+//	vertexColour.b = 0.0f;
+
+	// uniform sampler2D textureNumber01;
+		
+	vec4 tex00RGBA = texture( textSampler2D_00, vertTextCoords.xy );
+	vec4 tex01RGBA = texture( textSampler2D_01, vertTextCoords.xy );
+	vec4 tex02RGBA = texture( textSampler2D_02, vertTextCoords.xy );
+	vec4 tex03RGBA = texture( textSampler2D_03, vertTextCoords.xy );
+
+	vec4 finalTextRGBA =  tex00RGBA * texMixRatios.x
+						+ tex01RGBA * texMixRatios.y
+						+ tex02RGBA * texMixRatios.z
+						+ tex03RGBA * texMixRatios.w;
+						
+	
 	
 //	vec4 lightContrib = calculateLightContrib(vertexColour.rgb, vertNormal.xyz, vertWorldPosition.xyz, vertSpecular);	
 //	pixelColour.rgb = lightContrib.rgb;
 	
-	pixelColour.rgb = vertexColour.rgb;
+	pixelColour.rgb = finalTextRGBA.rgb;
 	
 	
 //	pixelColour.a = 1.0f;

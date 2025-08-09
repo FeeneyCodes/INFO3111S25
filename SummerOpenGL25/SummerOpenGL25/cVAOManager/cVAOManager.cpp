@@ -65,6 +65,10 @@ bool cVAOManager::LoadModelIntoVAO(
 		return false;
 	}
 
+
+//this->GenTextureCoordsSpherical(drawInfo,
+//	enumTEXCOORDBIAS::POSITIVE_X,
+//	enumTEXCOORDBIAS::POSITIVE_Y, true, 1.0f, false);
 	// 
 	// Model is loaded and the vertices and indices are in the drawInfo struct
 	// 
