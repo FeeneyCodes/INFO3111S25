@@ -51,6 +51,12 @@ uniform sampler2D textSampler2D_03;
 // All the ratios should add up to 1.0f
 uniform vec4 texMixRatios;		// x = 0, y = 1, etc. 
 
+// Same uniform as in the vertex shader
+uniform bool bUseVertexColour;	// If true, DON'T use the textures
+uniform bool bDoNotLight;		// If true, lighting is NOT calcuated
+
+// Default is 0,0,0 (black) so has no impact if not set
+uniform vec3 ambientRGB;	// This is added to the AFTER lighting calculation
 
 void main()
 {
@@ -62,18 +68,34 @@ void main()
 //	vertexColour.b = 0.0f;
 
 	// uniform sampler2D textureNumber01;
-		
-	vec4 tex00RGBA = texture( textSampler2D_00, vertTextCoords.xy );
-	vec4 tex01RGBA = texture( textSampler2D_01, vertTextCoords.xy );
-	vec4 tex02RGBA = texture( textSampler2D_02, vertTextCoords.xy );
-	vec4 tex03RGBA = texture( textSampler2D_03, vertTextCoords.xy );
+	
+	// Set the vertex colour in case we are NOT using texture lookup
+	vec4 finalTextRGBA = vec4(vertexColour.rgb, 1.0f);
+	
+	if ( ! bUseVertexColour )
+	{
+		// Then we are using the textures for the "vertex colour"
+		vec4 tex00RGBA = texture( textSampler2D_00, vertTextCoords.xy );
+		vec4 tex01RGBA = texture( textSampler2D_01, vertTextCoords.xy );
+		vec4 tex02RGBA = texture( textSampler2D_02, vertTextCoords.xy );
+		vec4 tex03RGBA = texture( textSampler2D_03, vertTextCoords.xy );
 
-	vec4 finalTextRGBA =  tex00RGBA * texMixRatios.x
+		finalTextRGBA =   tex00RGBA * texMixRatios.x
 						+ tex01RGBA * texMixRatios.y
 						+ tex02RGBA * texMixRatios.z
 						+ tex03RGBA * texMixRatios.w;
+	}//if ( ! bUseVertexColour )
 					
-
+	
+	if ( bDoNotLight )
+	{ 
+		// Bypass the lighting calculation
+		pixelColour.rgb = finalTextRGBA.rgb;
+		// Assume alpha is 1.0f
+		pixelColour.a = 1.0f;
+		// Early exit of shader
+		return;
+	}
 	
 	
 //	vec4 lightContrib = calculateLightContrib(vertexColour.rgb, vertNormal.xyz, vertWorldPosition.xyz, vertSpecular);	
@@ -85,7 +107,7 @@ void main()
 	// Add some ambient if it's too dark
 	// You can think of "ambient" light as how bright something
 	//	is if it DOESN'T have any light DIRECTLY shining on it.
-	pixelColour.rgb += vec3(0.1f, 0.1f, 0.1f);
+	pixelColour.rgb += ambientRGB;
 	
 // Here's where we output the colour WITHOUT the lighting					
 //	pixelColour.rgb = finalTextRGBA.rgb;

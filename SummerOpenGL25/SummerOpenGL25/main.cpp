@@ -428,10 +428,21 @@ int main(void)
                 ::g_pLights->theLights[::g_selectedLightIndex].position.z);
 
             DrawMesh(g_pSmoothSphere, program);*/
-            ::g_pSmoothSphere = new cMeshObject();
-            ::g_pSmoothSphere->meshFileName = "assets/models/Isoshphere_smooth_inverted_normals_xyz_n_rgba.ply";
+
+            // Created the debug sphere, yet?
+            if (::g_pSmoothSphere == NULL)
+            {
+                // Nope
+                ::g_pSmoothSphere = new cMeshObject();
+            }
+//            ::g_pSmoothSphere->meshFileName = "assets/models/Isoshphere_smooth_inverted_normals_xyz_n_rgba.ply";
+            ::g_pSmoothSphere->meshFileName = "assets/models/Isoshphere_smooth_inverted_normals_xyz_n_rgba_uv.ply";
             ::g_pSmoothSphere->bIsWireframe = true;
             ::g_pSmoothSphere->bOverrideVertexModelColour = true;
+            //
+            ::g_pSmoothSphere->bDoNotLight = true;
+            ::g_pSmoothSphere->bUseVertexColours = true;
+            //
             ::g_pSmoothSphere->position = glm::vec3(
                 ::g_pLights->theLights[::g_selectedLightIndex].position.x,
                 ::g_pLights->theLights[::g_selectedLightIndex].position.y,
@@ -454,7 +465,7 @@ int main(void)
                 ::g_pLights->theLights[::g_selectedLightIndex].atten.z);
 
             ::g_pSmoothSphere->scale = distanceAt75Percent;
-            ::g_pSmoothSphere->colourRGB = glm::vec3(1.0f, 0.0f, 0.0f);
+            ::g_pSmoothSphere->colourRGB = glm::vec3(0.5f, 0.0f, 0.0f);
             DrawMesh(g_pSmoothSphere, program);
 
             float distanceAt50Percent = lightHelper.calcApproxDistFromAtten(0.5f,
@@ -464,7 +475,7 @@ int main(void)
                 ::g_pLights->theLights[::g_selectedLightIndex].atten.z);
 
             ::g_pSmoothSphere->scale = distanceAt50Percent;
-            ::g_pSmoothSphere->colourRGB = glm::vec3(0.0f, 1.0f, 0.0f);
+            ::g_pSmoothSphere->colourRGB = glm::vec3(0.0f, 0.5f, 0.0f);
             DrawMesh(g_pSmoothSphere, program);
 
             float distanceAt25Percent = lightHelper.calcApproxDistFromAtten(0.25f,
@@ -474,7 +485,7 @@ int main(void)
                 ::g_pLights->theLights[::g_selectedLightIndex].atten.z);
 
             ::g_pSmoothSphere->scale = distanceAt25Percent;
-            ::g_pSmoothSphere->colourRGB = glm::vec3(0.0f, 0.0f, 1.0f);
+            ::g_pSmoothSphere->colourRGB = glm::vec3(0.0f, 0.0f, 0.5f);
             DrawMesh(g_pSmoothSphere, program);
 
             // 10% brightness - "dark"
@@ -485,7 +496,7 @@ int main(void)
                 ::g_pLights->theLights[::g_selectedLightIndex].atten.z);
 
             ::g_pSmoothSphere->scale = distanceAt10Percent;
-            ::g_pSmoothSphere->colourRGB = glm::vec3(0.0f, 1.0f, 1.0f);
+            ::g_pSmoothSphere->colourRGB = glm::vec3(0.0f, 0.5f, 0.5f);
             DrawMesh(g_pSmoothSphere, program);
 
 
@@ -708,6 +719,33 @@ void DrawMesh(cMeshObject* pCurrentMesh, GLint program)
         glUniform1f(useOverrideColor_location, GL_FALSE);
     }
 
+    // If true, DON'T use the textures
+    // uniform bool bUseVertexColour;	
+    GLint bUseVertexColour_UL = glGetUniformLocation(program, "bUseVertexColour");
+    if (pCurrentMesh->bUseVertexColours)
+    {
+        glUniform1f(bUseVertexColour_UL, (GLfloat)GL_TRUE);
+    }
+    else
+    {
+        glUniform1f(bUseVertexColour_UL, (GLfloat)GL_FALSE);
+    }
+
+
+    // If true, lighting is NOT calcuated
+    // uniform bool bDoNotLight;		
+    GLint bDoNotLight_UL = glGetUniformLocation(program, "bDoNotLight");
+    if (pCurrentMesh->bDoNotLight)
+    {
+        glUniform1f(bDoNotLight_UL, (GLfloat)GL_TRUE);
+    }
+    else
+    {
+        glUniform1f(bDoNotLight_UL, (GLfloat)GL_FALSE);
+    }
+
+
+
     // Copy over the transparency
     // uniform float alphaTransparency;
     GLint alphaTransparency_UL 
@@ -781,6 +819,8 @@ void DrawMesh(cMeshObject* pCurrentMesh, GLint program)
 
     SetUpTexturesForObjetDraw(pCurrentMesh, program);
 
+
+    // 
 
 
     //glDrawArrays(GL_TRIANGLES, 0, g_NumVerticiesToDraw);
