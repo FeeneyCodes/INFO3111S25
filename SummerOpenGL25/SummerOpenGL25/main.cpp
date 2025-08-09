@@ -261,7 +261,10 @@ int main(void)
     ::g_pLights->theLights[2].atten.y = 0.003f; // linear
     ::g_pLights->theLights[2].atten.z = 0.0005f; // quadratic
 
-
+    // uniform vec3 ambientRGB;
+    GLint ambientRGB_UL = glGetUniformLocation(program, "ambientRGB");
+    float overallAmbient = 0.0f;
+    glUniform3f(ambientRGB_UL, overallAmbient, overallAmbient, overallAmbient);
 
 
 //    // Enable blend function

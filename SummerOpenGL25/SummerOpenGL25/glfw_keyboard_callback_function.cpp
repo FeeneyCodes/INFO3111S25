@@ -16,7 +16,7 @@ extern cLightManager* g_pLights;
 
 
 unsigned int g_selectedObjectIndex = 0;
-unsigned int g_selectedLightIndex = 2;
+unsigned int g_selectedLightIndex = 0;
 
 
 bool isShiftDown(int mods)
