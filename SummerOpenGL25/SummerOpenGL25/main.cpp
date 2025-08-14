@@ -168,6 +168,22 @@ int main(void)
     glfwSwapInterval(1);
 
 
+    // 
+    GLint maxTextureUnits = 0;
+    glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &maxTextureUnits);
+    std::cout << "GL_MAX_TEXTURE_IMAGE_UNITS = " << maxTextureUnits << std::endl;
+    std::cout << "(This is the total number of textures that can be sampled AT THE SAME TIME in a shader)" << std::endl;
+
+    GLint maxTextureSize = 0;
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
+    std::cout << "GL_MAX_TEXTURE_SIZE = " << maxTextureSize << std::endl;
+    std::cout << "(This is the largest dimension your texture can have)" << std::endl;
+
+    GLint maxCombinedTextureUnits = 0;
+    glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxCombinedTextureUnits);
+    std::cout << "GL_MAX_TEXTURE_IMAGE_UNITS = " << maxTextureUnits << std::endl;
+    std::cout << "(This is the total number of texture UNITS your card has)" << std::endl;
+
 
     ::g_pTheShaderManager = new cShaderManager();
 
@@ -617,7 +633,7 @@ int main(void)
 
 
 
-void SetUpTexturesForObjetDraw(cMeshObject* pCurrentMesh, GLint program)
+void SetUpTexturesForObjectDraw(cMeshObject* pCurrentMesh, GLint program)
 {
 //    GLuint Syd_TexID = ::g_pTheTextures->getTextureIDFromName("Sydney_Sweeney.bmp");
 //    GLuint Syd_TexID = ::g_pTheTextures->getTextureIDFromName("Texture_01_A.bmp");
@@ -820,7 +836,7 @@ void DrawMesh(cMeshObject* pCurrentMesh, GLint program)
 
 
 
-    SetUpTexturesForObjetDraw(pCurrentMesh, program);
+    SetUpTexturesForObjectDraw(pCurrentMesh, program);
 
 
     // 
