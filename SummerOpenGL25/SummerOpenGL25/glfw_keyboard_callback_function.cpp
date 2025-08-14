@@ -14,6 +14,9 @@ extern std::vector<cMeshObject*> g_pMeshesToDraw;
 extern cLightManager* g_pLights;
 
 
+// Is in main.cpp
+cMeshObject* g_pFindObjectByUniqueName(std::string theNameToFind);
+
 
 unsigned int g_selectedObjectIndex = 0;
 unsigned int g_selectedLightIndex = 0;
@@ -293,6 +296,21 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
     if (!areAnyModifiersDown(mods))
     {
+        cMeshObject* pTeapot = ::g_pFindObjectByUniqueName("Teapot");
+        if (pTeapot != NULL)
+        {
+            if (key == GLFW_KEY_M)
+            {
+                pTeapot->textureMixRatio[0] -= 0.1f;
+                pTeapot->textureMixRatio[1] += 0.1f;
+            }
+            if (key == GLFW_KEY_N)
+            {
+                pTeapot->textureMixRatio[0] += 0.1f;
+                pTeapot->textureMixRatio[1] -= 0.1f;
+           }
+        }//if (pTeapot != NULL)
+
  //       if (key == GLFW_KEY_A)
  //       {
  //           ::g_cameraEye.x += camera_speed;

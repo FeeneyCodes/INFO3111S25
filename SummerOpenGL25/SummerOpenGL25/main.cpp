@@ -292,6 +292,14 @@ int main(void)
 //    cMeshObject* arrayOfSolidThing[MAX_NUMNBER_OF_SOLID_OBJECT];
 //    cMeshObject* arrayOfTransparent[MAX_NUMNBER_OF_SOLID_OBJECT];
 
+    
+    // Set this "masking" texture
+    //  uniform sampler2D sampMaskTexture01;
+    //  uniform bool bUseMaskingTexture;
+    GLint bUseMaskingTexture_ID = glGetUniformLocation(program, "bUseMaskingTexture");
+    // Set to false at the start
+    glUniform1f(bUseMaskingTexture_ID, (GLfloat)GL_TRUE);
+
 
     while (!glfwWindowShouldClose(window))
     {
@@ -704,6 +712,20 @@ void SetUpTexturesForObjectDraw(cMeshObject* pCurrentMesh, GLint program)
         pCurrentMesh->textureMixRatio[1],
         pCurrentMesh->textureMixRatio[2],
         pCurrentMesh->textureMixRatio[3]);
+
+
+    // Set up masking texture
+    //  uniform sampler2D sampMaskTexture01;
+    {   // Texture sampler 8:
+        GLuint maskTextureID = ::g_pTheTextures->getTextureIDFromName("MaskingTexture.bmp");
+        glActiveTexture(GL_TEXTURE8);
+        glBindTexture(GL_TEXTURE_2D, maskTextureID);
+
+        GLint sampMaskTexture01_UL = glGetUniformLocation(program, "sampMaskTexture01");
+        glUniform1i(sampMaskTexture01_UL, 8);   
+    }
+
+
 
     return;
 }

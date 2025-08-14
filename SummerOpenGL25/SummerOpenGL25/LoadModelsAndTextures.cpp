@@ -167,6 +167,10 @@ void LoadTexturesIntoTextureManager(cBasicTextureManager* pTheTextureManager)
     pTheTextureManager->Create2DTextureFromBMPFile("Warehouse_Fiber.bmp", true);
     pTheTextureManager->Create2DTextureFromBMPFile("Warehouse_WrappedPallet.bmp", true);
 
+
+    pTheTextureManager->Create2DTextureFromBMPFile("Seamless-Rust-Texture.bmp", true);
+    pTheTextureManager->Create2DTextureFromBMPFile("MaskingTexture.bmp", true);
+
     //    if ( ::g_pTheTextures->CreateCubeTextureFromBMPFiles(
     //        "Space",
 
@@ -294,13 +298,15 @@ void LoadModelsIntoScene()
 
 
     cMeshObject* pTeaPot = new cMeshObject();
+    pTeaPot->uniqueName = "Teapot";
     pTeaPot->position.x = -30.f;
     pTeaPot->position.y = 10.0f;
     pTeaPot->scale = 0.2f;
     pTeaPot->meshFileName = "assets/models/Utah_Teapot_xyz_n_rgba_UV.ply";
-//    pTeaPot->textureNames[0] = "Sydney_Sweeney.bmp";
-    pTeaPot->textureNames[0] = "Brushed_Metal_Texture.bmp";
+    pTeaPot->textureNames[0] = "Seamless-Rust-Texture.bmp";
+    pTeaPot->textureNames[1] = "Brushed_Metal_Texture.bmp";
     pTeaPot->textureMixRatio[0] = 1.0f;
+    pTeaPot->textureMixRatio[1] = 0.0f;
     ::g_pMeshesToDraw.push_back(pTeaPot);
 
 

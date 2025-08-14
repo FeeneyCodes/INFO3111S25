@@ -46,6 +46,10 @@ uniform sampler2D textSampler2D_01;		// Dungeon
 uniform sampler2D textSampler2D_02;
 uniform sampler2D textSampler2D_03;
 
+
+uniform sampler2D sampMaskTexture01;
+uniform bool bUseMaskingTexture;
+
 // From cMeshObject: float textureMixRatio[NUM_TEXTURES];
 // 0.0 = no texture to 1.0 = 100% of that texture
 // All the ratios should add up to 1.0f
@@ -86,6 +90,10 @@ void main()
 						+ tex03RGBA * texMixRatios.w;
 	}//if ( ! bUseVertexColour )
 					
+
+
+	
+	
 	
 	if ( bDoNotLight )
 	{ 
@@ -95,6 +103,26 @@ void main()
 		pixelColour.a = 1.0f;
 		// Early exit of shader
 		return;
+	}
+	
+	
+		// Another use of textures: "masking"
+//	if (bUseMaskingTexture) 
+	{
+		//uniform sampler2D sampMaskTexture01;
+		// Use this texture to "mask" parts of the original texture
+		vec4 tex00RGBA = texture( textSampler2D_00, vertTextCoords.xy ); // Rust
+		vec4 tex01RGBA = texture( textSampler2D_01, vertTextCoords.xy ); // Steel
+		
+		float maskValue = texture( sampMaskTexture01, vertTextCoords.xy ).r;
+		
+		finalTextRGBA.rgb = tex00RGBA.rgb * maskValue 
+                          + tex01RGBA.rgb * (1.0f - maskValue);
+						  
+		if ( maskValue > 0.5f )
+		{
+			discard;
+		}
 	}
 	
 	
