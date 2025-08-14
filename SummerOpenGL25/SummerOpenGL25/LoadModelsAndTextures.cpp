@@ -60,6 +60,13 @@ void LoadFilesIntoVAOManager(cVAOManager* pTheMeshManager, GLuint program)
         std::cout << "SmoothSphere NOT loaded into VAO!" << std::endl;
     }
 
+//    if (!pTheMeshManager->LoadModelIntoVAO("assets/models/Isoshphere_smooth_xyz_n_rgba_uv.ply",
+//        SmoothSphereMeshInfo, program, true, true, true, 1.0f))
+//    {
+//        std::cout << "SmoothSphere NOT loaded into VAO!" << std::endl;
+//    }
+
+
 //    sModelDrawInfo dolphinMeshInfo;
 //    //    if (!::g_pMeshManager->LoadModelIntoVAO("assets/models/dolphin_xyz_n_rgba.ply",
 //    if (!pTheMeshManager->LoadModelIntoVAO("assets/models/dolphin_xyz_n_rgba_UV.ply",
@@ -172,6 +179,16 @@ void LoadTexturesIntoTextureManager(cBasicTextureManager* pTheTextureManager)
 
 void LoadModelsIntoScene()
 {
+//    cMeshObject* pSkyboxSphere = new cMeshObject();
+//    pSkyboxSphere->uniqueName = "Skybox_Sphere";
+//    pSkyboxSphere->meshFileName = "assets/models/Isoshphere_smooth_xyz_n_rgba_uv.ply";
+//    pSkyboxSphere->textureNames[0] = "Sydney_Sweeney.bmp";
+//    pSkyboxSphere->textureMixRatio[0] = 1.0f;
+//    pSkyboxSphere->scale = 5.0f;
+//    pSkyboxSphere->position = glm::vec3(15.0f, 0.0f, -15.0f);
+//    ::g_pMeshesToDraw.push_back(pSkyboxSphere);
+        
+        
     {
         glm::vec3 warehouseLocationXYZ = glm::vec3(-50.0f, -20.0f, 100.0f);
         glm::vec3 warehouseOrientation = glm::vec3(0.0f, 90.0f, 0.0f);

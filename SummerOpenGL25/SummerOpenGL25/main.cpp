@@ -181,7 +181,7 @@ int main(void)
 
     GLint maxCombinedTextureUnits = 0;
     glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxCombinedTextureUnits);
-    std::cout << "GL_MAX_TEXTURE_IMAGE_UNITS = " << maxTextureUnits << std::endl;
+    std::cout << "GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS = " << maxTextureUnits << std::endl;
     std::cout << "(This is the total number of texture UNITS your card has)" << std::endl;
 
 
