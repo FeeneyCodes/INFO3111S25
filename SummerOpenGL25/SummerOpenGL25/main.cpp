@@ -300,6 +300,19 @@ int main(void)
     // Set to false at the start
     glUniform1f(bUseMaskingTexture_ID, (GLfloat)GL_TRUE);
 
+    // The skybox textue likely won't change, so we are setting it once at the start
+    GLuint sunnydaytextID = ::g_pTheTextures->getTextureIDFromName("SunnyDay");
+
+    // Chose a unique texture unit. Here I pick 20 just because...
+    glActiveTexture(GL_TEXTURE20);	
+    // Note this ISN'T GL_TEXTURE_2D
+    glBindTexture(GL_TEXTURE_CUBE_MAP, sunnydaytextID);    // <-- 0 is the texture unit
+
+    // uniform sampler2D textSampler2D_00;	
+    GLint skyboxCubeTexture_UL = glGetUniformLocation(program, "skyboxCubeTexture");
+    glUniform1i(skyboxCubeTexture_UL, 20);   // (Uniform ID, Texture Unit #)
+
+
 
     while (!glfwWindowShouldClose(window))
     {
@@ -323,7 +336,7 @@ int main(void)
             0.6f,           // FOV  60 degrees
             ratio,          // Aspect ratio
             1.0f,           // "near plane"
-            1000000.0f);       // "far plane"
+            1000.0f);       // "far plane"
 
         
 
@@ -357,6 +370,41 @@ int main(void)
         glUniformMatrix4fv(view_location, 1, GL_FALSE, glm::value_ptr(matView));
 
         ::g_pLights->UpdateShaderUniforms(program);
+
+
+        // ************************************************
+        //    ____  _          _               
+        //   / ___|| | ___   _| |__   _____  __
+        //   \___ \| |/ / | | | '_ \ / _ \ \/ /
+        //    ___) |   <| |_| | |_) | (_) >  < 
+        //   |____/|_|\_\\__, |_.__/ \___/_/\_\
+        //               |___/                 
+
+        cMeshObject* pSkyBox = g_pFindObjectByUniqueName("skybox_mesh");
+        GLint bIsSkyboxObject_UL = glGetUniformLocation(program, "bIsSkyboxObject");
+        glUniform1f(bIsSkyboxObject_UL, 1.0f);  // Or GL_TRUE
+
+        if (pSkyBox != NULL)
+        {
+            pSkyBox->bIsVisible = true;
+
+            // Move this mesh to where the camera is
+            pSkyBox->position = g_pFlyCamera->getEyeLocation();
+
+            // uniform bool bIsSkyboxObject;
+
+            DrawMesh(pSkyBox, program);
+
+
+            pSkyBox->bIsVisible = false;
+
+        }//if (pSkyBox != NULL)
+
+        glUniform1f(bIsSkyboxObject_UL, 0.0f);  // Or GL_FALSE
+        //// ************************************************
+
+
+
 
         std::vector<cMeshObject*> vecSolidThings;
         std::vector<cMeshObject*> vecTransparentThings;

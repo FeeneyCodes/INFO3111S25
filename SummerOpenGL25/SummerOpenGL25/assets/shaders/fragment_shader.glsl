@@ -46,14 +46,20 @@ uniform sampler2D textSampler2D_01;		// Dungeon
 uniform sampler2D textSampler2D_02;
 uniform sampler2D textSampler2D_03;
 
-
-uniform sampler2D sampMaskTexture01;
-uniform bool bUseMaskingTexture;
-
 // From cMeshObject: float textureMixRatio[NUM_TEXTURES];
 // 0.0 = no texture to 1.0 = 100% of that texture
 // All the ratios should add up to 1.0f
 uniform vec4 texMixRatios;		// x = 0, y = 1, etc. 
+
+// If this is true, then we are drawing the skybox
+// (it's false for all other objects)
+uniform bool bIsSkyboxObject;
+uniform samplerCube skyboxCubeTexture;
+
+
+uniform sampler2D sampMaskTexture01;
+uniform bool bUseMaskingTexture;
+
 
 // Same uniform as in the vertex shader
 uniform bool bUseVertexColour;	// If true, DON'T use the textures
@@ -64,6 +70,42 @@ uniform vec3 ambientRGB;	// This is added to the AFTER lighting calculation
 
 void main()
 {
+	
+	// Skybox
+	// uniform bool bIsSkyboxObject;
+	// uniform samplerCube skyboxCubeTexture;
+//	if ( bIsSkyboxObject )
+	{
+		// TEMP DEBUG
+		//pixelColour.rgba = vec4( 1.0f, 0.0f, 0.0f, 1.0f);
+		
+		// Note we are using the normal vectors to cast a ray that
+		//	intersects with the cube map.
+		// (we completely ignore the UVs on the skybox sphere)
+		
+//		pixelColour.rgb = texture( skyboxCubeTexture, vertNormal.xyz ).rgb;
+		
+		vec3 eyeRayIncident = normalize(eyeLocation - vertWorldPosition.xyz);
+		
+		vec3 reflectRay = reflect(vertNormal.xyz, eyeRayIncident);
+		vec3 refractRay = refract(vertNormal.xyz, eyeRayIncident, 1.06f);
+		
+		vec3 reflectRGB = texture( skyboxCubeTexture, reflectRay ).rgb;
+		vec3 refractRGB = texture( skyboxCubeTexture, refractRay ).rgb;	
+		
+		
+		pixelColour.rgb = reflectRGB * 0.5f +
+						  refractRGB * 0.5f;
+		
+//		pixelColour.rgb *= 0.0001f;
+//		pixelColour.rgb += vec3(1.0f, 0.0f, 0.0f);
+		
+		pixelColour.a = 1.0f;
+	
+		return;
+	}
+
+	
 	
 	vec4 vertexColour = vec4(vertColor);
 	
@@ -108,22 +150,22 @@ void main()
 	
 		// Another use of textures: "masking"
 //	if (bUseMaskingTexture) 
-	{
-		//uniform sampler2D sampMaskTexture01;
-		// Use this texture to "mask" parts of the original texture
-		vec4 tex00RGBA = texture( textSampler2D_00, vertTextCoords.xy ); // Rust
-		vec4 tex01RGBA = texture( textSampler2D_01, vertTextCoords.xy ); // Steel
-		
-		float maskValue = texture( sampMaskTexture01, vertTextCoords.xy ).r;
-		
-		finalTextRGBA.rgb = tex00RGBA.rgb * maskValue 
-                          + tex01RGBA.rgb * (1.0f - maskValue);
-						  
-		if ( maskValue > 0.5f )
-		{
-			discard;
-		}
-	}
+//	{
+//		//uniform sampler2D sampMaskTexture01;
+//		// Use this texture to "mask" parts of the original texture
+//		vec4 tex00RGBA = texture( textSampler2D_00, vertTextCoords.xy ); // Rust
+//		vec4 tex01RGBA = texture( textSampler2D_01, vertTextCoords.xy ); // Steel
+//		
+//		float maskValue = texture( sampMaskTexture01, vertTextCoords.xy ).r;
+//		
+//		finalTextRGBA.rgb = tex00RGBA.rgb * maskValue 
+//                          + tex01RGBA.rgb * (1.0f - maskValue);
+//						  
+//		if ( maskValue > 0.5f )
+//		{
+//			discard;
+//		}
+//	}
 	
 	
 //	vec4 lightContrib = calculateLightContrib(vertexColour.rgb, vertNormal.xyz, vertWorldPosition.xyz, vertSpecular);	

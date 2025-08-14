@@ -134,6 +134,7 @@ void LoadFilesIntoVAOManager(cVAOManager* pTheMeshManager, GLuint program)
     pTheMeshManager->LoadModelIntoVAO_2("assets/models/Warehouse_Loading_Pallets.ply", program);
     pTheMeshManager->LoadModelIntoVAO_2("assets/models/Warehouse_Loading_Roof.ply", program);
 
+    pTheMeshManager->LoadModelIntoVAO_2("assets/models/Isoshphere_smooth_xyz_n_rgba_uv.ply", program);
 
     std::cout << pTheMeshManager->getListOfLoadedModels();
 
@@ -171,8 +172,19 @@ void LoadTexturesIntoTextureManager(cBasicTextureManager* pTheTextureManager)
     pTheTextureManager->Create2DTextureFromBMPFile("Seamless-Rust-Texture.bmp", true);
     pTheTextureManager->Create2DTextureFromBMPFile("MaskingTexture.bmp", true);
 
-    //    if ( ::g_pTheTextures->CreateCubeTextureFromBMPFiles(
-    //        "Space",
+    //std::string posX_fileName, std::string negX_fileName,
+    //std::string posY_fileName, std::string negY_fileName,
+    //std::string posZ_fileName, std::string negZ_fileName,
+    std::string errorMessage = "";
+    pTheTextureManager->SetBasePath("assets/textures/CubeMaps");
+    if (!pTheTextureManager->CreateCubeTextureFromBMPFiles("SunnyDay",
+        "TropicalSunnyDayRight2048.bmp", "TropicalSunnyDayLeft2048.bmp",
+        "TropicalSunnyDayUp2048.bmp", "TropicalSunnyDayDown2048.bmp",
+        "TropicalSunnyDayBack2048.bmp", "TropicalSunnyDayFront2048.bmp",
+        true, errorMessage))
+    {
+        std::cout << "Didn't load sunny day texture because: " << errorMessage << std::endl;
+    }
 
 
         //GLuint SydSwee_TID = ::g_pTheTextures->getTextureIDFromName("Sydney_Sweeney.bmp");
@@ -458,6 +470,23 @@ void LoadModelsIntoScene()
     pDolphin2->textureMixRatio[0] = 1.0f;
 
     ::g_pMeshesToDraw.push_back(pDolphin2);
+
+
+    // This is being used for the skybox
+    cMeshObject* pSkyBoxMesh = new cMeshObject();
+    pSkyBoxMesh->uniqueName = "skybox_mesh";
+    pSkyBoxMesh->meshFileName = "assets/models/Isoshphere_smooth_xyz_n_rgba_uv.ply";
+    pSkyBoxMesh->scale = 500.0f;
+    // We AREN'T going to use these...
+    pSkyBoxMesh->textureNames[0] = "Sydney_Sweeney.bmp";
+    pSkyBoxMesh->textureMixRatio[0] = 1.0f;
+
+    pSkyBoxMesh->bDoNotLight = true;
+    // Will add it but it's invisible
+    pSkyBoxMesh->bIsVisible = false;
+    ::g_pMeshesToDraw.push_back(pSkyBoxMesh);
+
+
 
 
     return;
