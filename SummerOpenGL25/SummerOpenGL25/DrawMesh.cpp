@@ -31,50 +31,50 @@ void SetUpTexturesForObjectDraw(cMeshObject* pCurrentMesh, GLint program)
 
         // Get the sampler (shader) uniform location
         // uniform sampler2D textSampler2D_00;	
-        GLint texSamp2D_00_UL = glGetUniformLocation(program, "texSamp2D_00");
-        glUniform1i(texSamp2D_00_UL, texture00Unit);   // (Uniform ID, Texture Unit #)
+        GLint textSampler2D_00_UL = glGetUniformLocation(program, "textSampler2D_00");
+        glUniform1i(textSampler2D_00_UL, texture00Unit);   // (Uniform ID, Texture Unit #)
     }
 
-    //{   // Texture sampler01:
-    //    GLuint textID01 = ::g_pTheTextures->getTextureIDFromName(pCurrentMesh->textureNames[1]);
-    //    // Bind this texture to the sampler
-    //    // Choose a texture unit... 
-    //    // Unit: #1
-    //    glActiveTexture(GL_TEXTURE1);	// GL_TEXTURE0 = 33984
-    //    // Bind texture to tell texture unit what it's bound to
-    //    glBindTexture(GL_TEXTURE_2D, textID01);    // Note: NOT GL_TEXTURE1
+    {   // Texture sampler01:
+        GLuint textID01 = ::g_pTheTextures->getTextureIDFromName(pCurrentMesh->textureNames[1]);
+        // Bind this texture to the sampler
+        // Choose a texture unit... 
+        // Unit: #1
+        glActiveTexture(GL_TEXTURE1);	// GL_TEXTURE0 = 33984
+        // Bind texture to tell texture unit what it's bound to
+        glBindTexture(GL_TEXTURE_2D, textID01);    // Note: NOT GL_TEXTURE1
 
-    //    // Get the sampler (shader) uniform location
-    //    // uniform sampler2D textSampler2D_01;	
-    //    GLint textSampler2D_01_UL = glGetUniformLocation(program, "textSampler2D_01");
-    //    glUniform1i(textSampler2D_01_UL, 1);
-    //}
+        // Get the sampler (shader) uniform location
+        // uniform sampler2D texSamp2D_01;	
+        GLint textSampler2D_01_UL = glGetUniformLocation(program, "textSampler2D_01");
+        glUniform1i(textSampler2D_01_UL, 1);
+    }
 
-    //{   // Texture sampler 2:
+    {   // Texture sampler 2:
 
-    //    // Texture bound to texture unit:
-    //    GLuint textID02 = ::g_pTheTextures->getTextureIDFromName(pCurrentMesh->textureNames[2]);
-    //    glActiveTexture(GL_TEXTURE2);
-    //    glBindTexture(GL_TEXTURE_2D, textID02);
+        // Texture bound to texture unit:
+        GLuint textID02 = ::g_pTheTextures->getTextureIDFromName(pCurrentMesh->textureNames[2]);
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, textID02);
 
-    //    // Sampler tied to texture unit
-    //    // uniform sampler2D textSampler2D_02;
-    //    GLint textSampler2D_02_UL = glGetUniformLocation(program, "textSampler2D_02");
-    //    glUniform1i(textSampler2D_02_UL, 2);
-    //}
+        // Sampler tied to texture unit
+        // uniform sampler2D textSampler2D_02;
+        GLint textSampler2D_02_UL = glGetUniformLocation(program, "textSampler2D_02");
+        glUniform1i(textSampler2D_02_UL, 2);
+    }
 
-    //{   // Texture sampler 3:
+    {   // Texture sampler 3:
 
-    //    // Texture bound to texture unit:
-    //    GLuint textID03 = ::g_pTheTextures->getTextureIDFromName(pCurrentMesh->textureNames[3]);
-    //    glActiveTexture(GL_TEXTURE3);
-    //    glBindTexture(GL_TEXTURE_2D, textID03);
+        // Texture bound to texture unit:
+        GLuint textID03 = ::g_pTheTextures->getTextureIDFromName(pCurrentMesh->textureNames[3]);
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, textID03);
 
-    //    // Sampler tied to texture unit
-    //    // uniform sampler2D textSampler2D_03;
-    //    GLint textSampler2D_03_UL = glGetUniformLocation(program, "textSampler2D_03");
-    //    glUniform1i(textSampler2D_03_UL, 3);
-    //}
+        // Sampler tied to texture unit
+        // uniform sampler2D textSampler2D_03;
+        GLint textSampler2D_03_UL = glGetUniformLocation(program, "textSampler2D_03");
+        glUniform1i(textSampler2D_03_UL, 3);
+    }
 
 
 

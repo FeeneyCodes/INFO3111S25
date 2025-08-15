@@ -41,10 +41,10 @@ uniform sLight theLights[NUMBEROFLIGHTS];
 // Textures (can have up to 32+ of these)
 // BUT keep in mind that's NOT the "total number of textures"
 //    it's the max texture PER PIXEL
-uniform sampler2D texSamp2D_00;		// Sydney
-uniform sampler2D texSamp2D_01;		// Dungeon
-uniform sampler2D texSamp2D_02;
-uniform sampler2D texSamp2D_03;
+uniform sampler2D textSampler2D_00;		// Sydney
+uniform sampler2D textSampler2D_01;		// Dungeon
+uniform sampler2D textSampler2D_02;
+uniform sampler2D textSampler2D_03;
 
 // From cMeshObject: float textureMixRatio[NUM_TEXTURES];
 // 0.0 = no texture to 1.0 = 100% of that texture
@@ -117,10 +117,10 @@ void main()
 	else
 	{
 		// Use the textures for the "vertex colour"
-		vec3 tex00RGB = texture( texSamp2D_00, vertTextCoords.xy ).rgb;
-		vec3 tex01RGB = texture( texSamp2D_01, vertTextCoords.xy ).rgb;
-		vec3 tex02RGB = texture( texSamp2D_02, vertTextCoords.xy ).rgb;
-		vec3 tex03RGB = texture( texSamp2D_03, vertTextCoords.xy ).rgb;
+		vec3 tex00RGB = texture( textSampler2D_00, vertTextCoords.xy ).rgb;
+		vec3 tex01RGB = texture( textSampler2D_01, vertTextCoords.xy ).rgb;
+		vec3 tex02RGB = texture( textSampler2D_02, vertTextCoords.xy ).rgb;
+		vec3 tex03RGB = texture( textSampler2D_03, vertTextCoords.xy ).rgb;
 
 		vertexColourRGB.rgb = tex00RGB * texMixRatios.x;
 							+ tex01RGB * texMixRatios.y
