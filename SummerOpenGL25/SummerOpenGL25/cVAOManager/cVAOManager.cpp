@@ -11,6 +11,7 @@
 #include <vector>
 
 #include <sstream>
+#include <iostream>
 
 sModelDrawInfo::sModelDrawInfo()
 {
@@ -65,6 +66,8 @@ bool cVAOManager::LoadModelIntoVAO(
 
 	drawInfo.meshName = fileName;
 
+
+
 	if ( ! this->m_LoadTheModel( fileName, drawInfo, 
 		                         hasNormals, hasColours,
 		                         hasTextureCoords, scaling))
@@ -72,7 +75,6 @@ bool cVAOManager::LoadModelIntoVAO(
 		this->m_AppendTextToLastError( "Didn't load model", true );
 		return false;
 	}
-
 
 //this->GenTextureCoordsSpherical(drawInfo,
 //	enumTEXCOORDBIAS::POSITIVE_X,
@@ -109,6 +111,7 @@ bool cVAOManager::LoadModelIntoVAO(
 				  GL_STATIC_DRAW );
 
 
+
 	// Copy the index buffer into the video card, too
 	// Create an index buffer.
 	glGenBuffers( 1, &(drawInfo.IndexBufferID) );
@@ -127,7 +130,8 @@ bool cVAOManager::LoadModelIntoVAO(
 	GLint vnorm_location = glGetAttribLocation(shaderProgramID, "vNorm");
 	// Now texture coords
 	GLint vTextCoords_location = glGetAttribLocation(shaderProgramID, "vTextCoords");
-	
+
+
 
 	// Set the vertex attributes for this shader
 	glEnableVertexAttribArray(vpos_location);	// vPos
@@ -137,26 +141,25 @@ bool cVAOManager::LoadModelIntoVAO(
 						   ( void* )offsetof(sVert, x));
 
 	glEnableVertexAttribArray(vnorm_location);	// vNorm
-	glVertexAttribPointer(vnorm_location, 4,		// vNorm
-		GL_FLOAT, GL_FALSE,
-		sizeof(sVert),
-		(void*)offsetof(sVert, nx));
+	glVertexAttribPointer( vnorm_location, 4,		// vNorm
+	                       GL_FLOAT, GL_FALSE,
+	                       sizeof(sVert),
+	                       (void*)offsetof(sVert, nx));
 
 	glEnableVertexAttribArray(vcol_location);	// vCol
 	glVertexAttribPointer( vcol_location, 4,		// vCol
-						   GL_FLOAT, GL_FALSE,
-							sizeof(sVert),
-						   ( void* )offsetof(sVert,r));
+	                       GL_FLOAT, GL_FALSE,
+	                       sizeof(sVert),
+	                       ( void* )offsetof(sVert,r));
 
 	// Tell it where the uv values are
 	glEnableVertexAttribArray(vTextCoords_location);	// vTextCoords
-	glVertexAttribPointer(vTextCoords_location,			// vTextCoords
-	                      2,		
-						   GL_FLOAT, 
-		                   GL_FALSE,
-							sizeof(sVert),
-						   ( void* )offsetof(sVert,u));
-
+	glVertexAttribPointer( vTextCoords_location,			// vTextCoords
+	                       2,		
+	                       GL_FLOAT, 
+	                       GL_FALSE,
+	                       sizeof(sVert),
+	                       ( void* )offsetof(sVert,u));
 
 
 	// Now that all the parts are set up, set the VAO to zero

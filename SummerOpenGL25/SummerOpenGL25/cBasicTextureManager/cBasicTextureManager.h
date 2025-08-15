@@ -26,6 +26,9 @@ public:
 
 	void SetBasePath(std::string basepath);
 
+	std::string getListOfLoadedTextures(void);
+
+	std::string decodeOpenGLErrorToString(GLenum errorCode);
 private:
 	std::string m_basePath;
 	std::string m_lastError;
@@ -33,7 +36,6 @@ private:
 	void m_appendErrorStringLine( std::string nextErrorTextLine );
 
 	std::map< std::string, CTextureFromBMP* > m_map_TexNameToTexture;
-
 
 };
 

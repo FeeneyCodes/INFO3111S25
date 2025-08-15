@@ -41,10 +41,10 @@ uniform sLight theLights[NUMBEROFLIGHTS];
 // Textures (can have up to 32+ of these)
 // BUT keep in mind that's NOT the "total number of textures"
 //    it's the max texture PER PIXEL
-uniform sampler2D textSampler2D_00;		// Sydney
-uniform sampler2D textSampler2D_01;		// Dungeon
-uniform sampler2D textSampler2D_02;
-uniform sampler2D textSampler2D_03;
+uniform sampler2D texSamp2D_00;		// Sydney
+uniform sampler2D texSamp2D_01;		// Dungeon
+uniform sampler2D texSamp2D_02;
+uniform sampler2D texSamp2D_03;
 
 // From cMeshObject: float textureMixRatio[NUM_TEXTURES];
 // 0.0 = no texture to 1.0 = 100% of that texture
@@ -62,93 +62,73 @@ uniform bool bUseMaskingTexture;
 
 
 // Same uniform as in the vertex shader
-uniform bool bUseVertexColour;	// If true, DON'T use the textures
-uniform bool bDoNotLight;		// If true, lighting is NOT calcuated
+uniform bool bUseVertexColourNotTexture;	// If true, the vertex colour is instead of texture
+uniform bool bDoNotLight;			// If true, lighting is NOT calcuated
 
 // Default is 0,0,0 (black) so has no impact if not set
 uniform vec3 ambientRGB;	// This is added to the AFTER lighting calculation
 
 void main()
 {
-	
+
+	pixelColour = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+
 	// Skybox
 	// uniform bool bIsSkyboxObject;
 	// uniform samplerCube skyboxCubeTexture;
-//	if ( bIsSkyboxObject )
+	if ( bIsSkyboxObject )
 	{
-		// TEMP DEBUG
-		//pixelColour.rgba = vec4( 1.0f, 0.0f, 0.0f, 1.0f);
-		
 		// Note we are using the normal vectors to cast a ray that
 		//	intersects with the cube map.
 		// (we completely ignore the UVs on the skybox sphere)
 		
-//		pixelColour.rgb = texture( skyboxCubeTexture, vertNormal.xyz ).rgb;
+		vec3 vertexColour = texture( skyboxCubeTexture, vertNormal.xyz ).rgb;
 		
-		vec3 eyeRayIncident = normalize(eyeLocation - vertWorldPosition.xyz);
-		
-		vec3 reflectRay = reflect(vertNormal.xyz, eyeRayIncident);
-		vec3 refractRay = refract(vertNormal.xyz, eyeRayIncident, 1.06f);
-		
-		vec3 reflectRGB = texture( skyboxCubeTexture, reflectRay ).rgb;
-		vec3 refractRGB = texture( skyboxCubeTexture, refractRay ).rgb;	
-		
-		
-		pixelColour.rgb = reflectRGB * 0.5f +
-						  refractRGB * 0.5f;
-		
-//		pixelColour.rgb *= 0.0001f;
-//		pixelColour.rgb += vec3(1.0f, 0.0f, 0.0f);
-		
+		pixelColour.rgb = vertexColour;		
 		pixelColour.a = 1.0f;
 	
 		return;
 	}
 
+	// Reflect and refract
+	// if (bAddReflectAndRefract)
+	// {
+	//		vec3 eyeRayIncident = normalize(eyeLocation - vertWorldPosition.xyz);
+	//		
+	//		vec3 reflectRay = reflect(vertNormal.xyz, eyeRayIncident);
+	//		vec3 refractRay = refract(vertNormal.xyz, eyeRayIncident, 1.06f);
+	//		
+	//		vec3 reflectRGB = texture( skyboxCubeTexture, reflectRay ).rgb;
+	//		vec3 refractRGB = texture( skyboxCubeTexture, refractRay ).rgb;	
+	//		
+	//		pixelColour.rgb = reflectRGB * 0.5f +
+	//						  refractRGB * 0.5f;
+	// }
 	
-	
-	vec4 vertexColour = vec4(vertColor);
-	
-//	vertexColour.r = vertTextCoords.x;		// S or U  (x)
-//	vertexColour.g = vertTextCoords.y;		// T or V  (y)
-//	vertexColour.b = 0.0f;
 
-	// uniform sampler2D textureNumber01;
-	
 	// Set the vertex colour in case we are NOT using texture lookup
-	vec4 finalTextRGBA = vec4(vertexColour.rgb, 1.0f);
+	vec3 vertexColourRGB = vec3(0.0f, 0.0f, 0.0f);
 	
-	if ( ! bUseVertexColour )
+	if ( bUseVertexColourNotTexture )
 	{
-		// Then we are using the textures for the "vertex colour"
-		vec4 tex00RGBA = texture( textSampler2D_00, vertTextCoords.xy );
-		vec4 tex01RGBA = texture( textSampler2D_01, vertTextCoords.xy );
-		vec4 tex02RGBA = texture( textSampler2D_02, vertTextCoords.xy );
-		vec4 tex03RGBA = texture( textSampler2D_03, vertTextCoords.xy );
-
-		finalTextRGBA =   tex00RGBA * texMixRatios.x
-						+ tex01RGBA * texMixRatios.y
-						+ tex02RGBA * texMixRatios.z
-						+ tex03RGBA * texMixRatios.w;
-	}//if ( ! bUseVertexColour )
-					
-
-
-	
-	
-	
-	if ( bDoNotLight )
-	{ 
-		// Bypass the lighting calculation
-		pixelColour.rgb = finalTextRGBA.rgb;
-		// Assume alpha is 1.0f
-		pixelColour.a = 1.0f;
-		// Early exit of shader
-		return;
+		// Use incoming vertex colour, NOT texture colour
+		vertexColourRGB = vertColor.rgb;
 	}
+	else
+	{
+		// Use the textures for the "vertex colour"
+		vec3 tex00RGB = texture( texSamp2D_00, vertTextCoords.xy ).rgb;
+		vec3 tex01RGB = texture( texSamp2D_01, vertTextCoords.xy ).rgb;
+		vec3 tex02RGB = texture( texSamp2D_02, vertTextCoords.xy ).rgb;
+		vec3 tex03RGB = texture( texSamp2D_03, vertTextCoords.xy ).rgb;
+
+		vertexColourRGB.rgb = tex00RGB * texMixRatios.x;
+							+ tex01RGB * texMixRatios.y
+							+ tex02RGB * texMixRatios.z
+							+ tex03RGB * texMixRatios.w;
+	}//if ( ! bUseVertexColour )
 	
-	
-		// Another use of textures: "masking"
+//	// Another use of textures: "masking"
 //	if (bUseMaskingTexture) 
 //	{
 //		//uniform sampler2D sampMaskTexture01;
@@ -167,11 +147,21 @@ void main()
 //		}
 //	}
 	
+	if ( bDoNotLight )
+	{ 
+		// Bypass the lighting calculation
+		pixelColour.rgb = vertexColourRGB.rgb;
+		// Assume alpha is 1.0f
+		pixelColour.a = 1.0f;
+		// Early exit of shader
+		return;
+	}
 	
 //	vec4 lightContrib = calculateLightContrib(vertexColour.rgb, vertNormal.xyz, vertWorldPosition.xyz, vertSpecular);	
 
 	// Replace the "vertex colour" with the colour form the textures
-	vec4 lightContrib = calculateLightContrib(finalTextRGBA.rgb, vertNormal.xyz, vertWorldPosition.xyz, vertSpecular);	
+	vec4 lightContrib = calculateLightContrib(vertexColourRGB.rgb, vertNormal.xyz, vertWorldPosition.xyz, vertSpecular);	
+	
 	pixelColour.rgb = lightContrib.rgb;
 	
 	// Add some ambient if it's too dark

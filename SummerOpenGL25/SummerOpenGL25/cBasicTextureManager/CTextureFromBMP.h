@@ -98,6 +98,8 @@ public:
 	C24BitBMPpixel getPixelAtRowColumn(unsigned int row, unsigned int column );
 	C24BitBMPpixel getPixelAtUV( float U, float V );
 
+	std::string decodeOpenGLErrorToString(GLenum errorCode);
+
 private:
 	// The actual image information
 	C24BitBMPpixel* m_p_theImages;	

@@ -29,6 +29,7 @@ void main()
 	vertWorldPosition = mModel * vec4(vPos.xyz, 1.0f);
 	
 	
+	// Copy colour over
 	if (bUseOverrideColor)
 	{
 		vertColor = vec4(colorOverride.rgb, 1.0f);

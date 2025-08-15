@@ -154,6 +154,7 @@
     <ClCompile Include="cShaderManager\cShaderManager.cpp" />
     <ClCompile Include="cVAOManager\cVAOManager.cpp" />
     <ClCompile Include="cVAOManager\GenTextureCoordsSpherical.cpp" />
+    <ClCompile Include="DrawMesh.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="glfw_keyboard_callback_function.cpp" />
     <ClCompile Include="main.cpp" />

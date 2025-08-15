@@ -14,7 +14,7 @@ cMeshObject::cMeshObject()
 	this->bIsVisible = true;
 
 	this->bDoNotLight = false;
-	this->bUseVertexColours = false;
+	this->bDontUseTextures = false;
 
 	this->textureNames[0] = "";
 	this->textureNames[1] = "";

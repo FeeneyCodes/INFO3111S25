@@ -26,11 +26,12 @@ public:
 	bool bOverrideVertexModelColour;
 	bool bIsWireframe;
 	bool bIsVisible;
+
 	// Turns off lighting 
 	bool bDoNotLight;	// default = false
 	// If true we DON'T use the texture lookup
-	// default = false;
-	bool bUseVertexColours;	
+	bool bDontUseTextures;		// default = false;
+
 
 	static const unsigned int NUM_TEXTURES = 4;
 	std::string textureNames[NUM_TEXTURES];

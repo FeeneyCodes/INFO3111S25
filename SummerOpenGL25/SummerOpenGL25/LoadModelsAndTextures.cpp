@@ -14,6 +14,8 @@ extern std::vector<cMeshObject*> g_pMeshesToDraw;
 
 void LoadFilesIntoVAOManager(cVAOManager* pTheMeshManager, GLuint program)
 {
+
+
     //pTheMeshManager = new cVAOManager();
 
     // Load the dungeon floow model
@@ -22,6 +24,8 @@ void LoadFilesIntoVAOManager(cVAOManager* pTheMeshManager, GLuint program)
     // Scale we want for the floor. 
     // They are 500 units wide.
     float newFloorScale = 10.0f / 500.0f;
+
+
 
     if (!pTheMeshManager->LoadModelIntoVAO("assets/models/Dungeon_models/Floors/SM_Env_Dwarf_Floor_03.ply",
         meshFloor03, program, true, true, true, newFloorScale))
@@ -138,17 +142,43 @@ void LoadFilesIntoVAOManager(cVAOManager* pTheMeshManager, GLuint program)
 
     std::cout << pTheMeshManager->getListOfLoadedModels();
 
+
     return;
 }
 
 void LoadTexturesIntoTextureManager(cBasicTextureManager* pTheTextureManager)
 {
+    //std::string posX_fileName, std::string negX_fileName,
+    //std::string posY_fileName, std::string negY_fileName,
+    //std::string posZ_fileName, std::string negZ_fileName,
+    pTheTextureManager->SetBasePath("assets/textures/CubeMaps");
+
+    std::string errorMessage = "";
+    if (!pTheTextureManager->CreateCubeTextureFromBMPFiles("SunnyDay",
+        "TropicalSunnyDayRight2048.bmp", "TropicalSunnyDayLeft2048.bmp",
+        "TropicalSunnyDayUp2048.bmp", "TropicalSunnyDayDown2048.bmp",
+        "TropicalSunnyDayBack2048.bmp", "TropicalSunnyDayFront2048.bmp",
+        true, errorMessage))
+    {
+        std::cout << "Didn't load sunny day texture because: " << errorMessage << std::endl;
+    }
+
+    if (!pTheTextureManager->CreateCubeTextureFromBMPFiles("Space",
+        "SpaceBox_right1_posX.bmp", "SpaceBox_left2_negX.bmp",
+        "SpaceBox_top3_posY.bmp", "SpaceBox_bottom4_negY.bmp",
+        "SpaceBox_front5_posZ.bmp", "SpaceBox_back6_negZ.bmp",
+        true, errorMessage))
+    {
+        std::cout << "Didn't load Space texture because: " << errorMessage << std::endl;
+    }
+
+
     pTheTextureManager->SetBasePath("assets/textures");
 
     // 
     if (pTheTextureManager->Create2DTextureFromBMPFile("Sydney_Sweeney.bmp", true))
     {
-        std::cout << "Loaded Sydney_Sweeney.bmp OK";
+        std::cout << "Loaded Sydney_Sweeney.bmp OK" << std::endl;
     };
 
     pTheTextureManager->Create2DTextureFromBMPFile("Dungeons_2_Texture_01_A.bmp", true);
@@ -171,20 +201,6 @@ void LoadTexturesIntoTextureManager(cBasicTextureManager* pTheTextureManager)
 
     pTheTextureManager->Create2DTextureFromBMPFile("Seamless-Rust-Texture.bmp", true);
     pTheTextureManager->Create2DTextureFromBMPFile("MaskingTexture.bmp", true);
-
-    //std::string posX_fileName, std::string negX_fileName,
-    //std::string posY_fileName, std::string negY_fileName,
-    //std::string posZ_fileName, std::string negZ_fileName,
-    std::string errorMessage = "";
-    pTheTextureManager->SetBasePath("assets/textures/CubeMaps");
-    if (!pTheTextureManager->CreateCubeTextureFromBMPFiles("SunnyDay",
-        "TropicalSunnyDayRight2048.bmp", "TropicalSunnyDayLeft2048.bmp",
-        "TropicalSunnyDayUp2048.bmp", "TropicalSunnyDayDown2048.bmp",
-        "TropicalSunnyDayBack2048.bmp", "TropicalSunnyDayFront2048.bmp",
-        true, errorMessage))
-    {
-        std::cout << "Didn't load sunny day texture because: " << errorMessage << std::endl;
-    }
 
 
         //GLuint SydSwee_TID = ::g_pTheTextures->getTextureIDFromName("Sydney_Sweeney.bmp");
@@ -443,11 +459,12 @@ void LoadModelsIntoScene()
     pCow3->scale = 0.5f;
     pCow3->meshFileName = "assets/models/cow_xyz_n_rgba_UV (MeshLab trivial, random).ply";
 
-    pCow3->textureNames[3] = "cow_xyz_n_rgba_UV_Blender_UV_Unwrap_grey.bmp";
+    pCow3->textureNames[1] = "cow_xyz_n_rgba_UV_Blender_UV_Unwrap_grey.bmp";
+//    pCow3->textureNames[1] = "Sydney_Sweeney.bmp";
     pCow3->textureMixRatio[0] = 0.0f;
-    pCow3->textureMixRatio[1] = 0.0f;
+    pCow3->textureMixRatio[1] = 1.0f;
     pCow3->textureMixRatio[2] = 0.0f;
-    pCow3->textureMixRatio[3] = 1.0f;   // <-- Grass is #3
+    pCow3->textureMixRatio[3] = 0.0f;   // <-- Grass is #3
 
     ::g_pMeshesToDraw.push_back(pCow3);
 

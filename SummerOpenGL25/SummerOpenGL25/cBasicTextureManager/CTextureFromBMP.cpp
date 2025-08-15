@@ -64,6 +64,10 @@ bool CTextureFromBMP::CreateNewTextureFromBMPFile2( std::string textureName, std
 
 	// Clear any old openGL errors???
 	int IHateYou = glGetError();
+	if (IHateYou != 0)
+	{
+		std::cout << "CreateNewTextureFromBMPFile2(): OpenGL error: " << this->decodeOpenGLErrorToString(IHateYou) << std::endl;
+	}
 
 	// Pick a texture number...
 //	GLuint textureNum = 0;
@@ -186,6 +190,14 @@ bool CTextureFromBMP::CreateNewCubeTextureFromBMPFiles( std::string cubeMapName,
 	bool bReturnVal = true;
 
 	// Do the magic...
+
+	// Clear any old openGL errors???
+	int IHateYou = glGetError();
+	if (IHateYou != 0)
+	{
+		std::cout << "CreateNewCubeTextureFromBMPFiles() OpenGL error: " << this->decodeOpenGLErrorToString(IHateYou) << std::endl;
+	}
+
 
 	// Pick a texture number...
 	//GLuint textureNum = 0;
@@ -334,6 +346,32 @@ bool CTextureFromBMP::ClearBMP( void )
 	this->m_p_theImages = 0;
 	return true;
 }
+
+std::string CTextureFromBMP::decodeOpenGLErrorToString(GLenum errorCode)
+{
+	switch (errorCode)
+	{
+	case GL_NO_ERROR:
+		return "GL_NO_ERROR";
+	case GL_INVALID_ENUM:
+		return "GL_INVALID_ENUM";
+	case GL_INVALID_VALUE:
+		return "GL_INVALID_VALUE";
+	case GL_INVALID_OPERATION:
+		return "GL_INVALID_OPERATION";
+	case GL_INVALID_FRAMEBUFFER_OPERATION:
+		return "GL_INVALID_FRAMEBUFFER_OPERATION";
+	case GL_OUT_OF_MEMORY:
+		return "GL_OUT_OF_MEMORY";
+	case GL_STACK_UNDERFLOW:
+		return "GL_STACK_UNDERFLOW";
+	case GL_STACK_OVERFLOW:
+		return "GL_STACK_OVERFLOW";
+	}
+
+	return "Unknown error code";
+}
+
 
 // Some of this taken from: http://www.allegro.cc/forums/thread/601551
 bool CTextureFromBMP::CreateNewBMPFromCurrentTexture( int mipMapLevel )
